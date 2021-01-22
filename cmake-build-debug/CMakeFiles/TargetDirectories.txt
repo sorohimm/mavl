@@ -1,3 +1,0 @@
-/Users/sorohimm/CLionProjects/GameEngine/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/sorohimm/CLionProjects/GameEngine/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/sorohimm/CLionProjects/GameEngine/cmake-build-debug/CMakeFiles/GameEngine.dir
