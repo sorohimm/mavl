@@ -6,10 +6,9 @@
 
 void Engine::draw()
 {
-    Window.clear(sf::Color::White);
+    Window.clear(); //sf::Color::White
 
-    std::string fileName = "../GayEngine/map.tmx";
-    Level.LoadFromFile(fileName);
+    Level.LoadFromFile("../GayEngine/levels/map.tmx");
 
     Level.Draw(Window);
 

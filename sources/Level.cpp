@@ -5,7 +5,22 @@
 #include <Level.h>
 #include <tinyxml.h>
 
-bool Level::LoadFromFile(std::string &filename)
+int Object::GetPropertyInt(std::string name)
+{
+    return atoi(properties[name].c_str());
+}
+
+float Object::GetPropertyFloat(std::string name)
+{
+    return strtod(properties[name].c_str(), nullptr);
+}
+
+std::string Object::GetPropertyString(std::string name)
+{
+    return properties[name];
+}
+
+bool Level::LoadFromFile(std::string filename)
 {
     TiXmlDocument levelFile(filename.c_str());
 
@@ -221,22 +236,6 @@ bool Level::LoadFromFile(std::string &filename)
     }
 
     return true;
-}
-
-
-int Object::GetPropertyInt(std::string name)
-{
-    return atoi(properties[name].c_str());
-}
-
-float Object::GetPropertyFloat(std::string name)
-{
-    return strtod(properties[name].c_str(), nullptr);
-}
-
-std::string Object::GetPropertyString(std::string name)
-{
-    return properties[name];
 }
 
 Object Level::GetObject(std::string name)
