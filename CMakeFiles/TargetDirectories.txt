@@ -1,0 +1,3 @@
+/Users/sorohimm/CLionProjects/GayEngine/CMakeFiles/rebuild_cache.dir
+/Users/sorohimm/CLionProjects/GayEngine/CMakeFiles/edit_cache.dir
+/Users/sorohimm/CLionProjects/GayEngine/CMakeFiles/GayEngine.dir
