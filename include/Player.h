@@ -1,7 +1,6 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+//  Copyright © 2020 Vladimir Mashir.
 //
-
 #ifndef GAYENGINE_P_H
 #define GAYENGINE_P_H
 
