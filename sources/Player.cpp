@@ -13,7 +13,7 @@ Player::Player()
     velocityX = 0;
     velocityY = 0;
 
-    Texture.loadFromFile("../GayEngine/levels/textures/daco_image.png");
+    Texture.loadFromFile("../GayEngine/levels/textures/mike_image.png");
     Sprite.setTexture(Texture);
     Sprite.setScale(0.27, 0.27);
 

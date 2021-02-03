@@ -39,7 +39,7 @@ bool Level::LoadFromFile(const std::string &filename) {
 
     // take first's tileset's ID's
     for (const auto &el : jmap["tilesets"]) {
-        firstTileIDs.emplace_back(std::make_pair(el["source"].get<std::string>(),
+        firstTileIDs.emplace_back(std::make_pair(el["image"].get<std::string>(),
                                                  el["firstgid"].get<int>()));
     }
 
