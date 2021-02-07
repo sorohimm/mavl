@@ -1,30 +1,36 @@
 //
-//  Copyright © 2020 Vladimir Mashir.
+// Copyright © 2020 Vladimir Mashir
 //
 
 #ifndef GAYENGINE_ENGINE_H
 #define GAYENGINE_ENGINE_H
 
-//#include <box2d/box2d.h>
 #include <SFML/Graphics.hpp>
 #include <Level.h>
 #include <Player.h>
+#include <random>
 
 class Engine
 {
 private:
     sf::RenderWindow Window;
+    sf::Event Event;
+
 
     Player Player;
     Level Level;
 
-    void input();
+    void input(sf::Event&);
     void update();
     void draw();
 
+    sf::View view;
+    sf::Vector2i screenSize;
+
 public:
-//    Engine();
+    Engine();
     void start();
+    sf::Vector2i GetScreenSize();
 };
 
 #endif //GAYENGINE_ENGINE_H

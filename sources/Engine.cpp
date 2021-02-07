@@ -2,36 +2,39 @@
 // Copyright © 2020 Vladimir Mashir. All rights reserved.
 //
 
-#include "Engine.h"
+#include <Engine.h>
+#include <Level.h>
 
-//Engine::Engine() {
-//
-////    sf::Vector2f resolution;
-////    resolution.x = sf::VideoMode::getDesktopMode().width;
-////    resolution.y = sf::VideoMode::getDesktopMode().height;
-//
-//}
+sf::Vector2i Engine::GetScreenSize() {
+    return screenSize;
+}
+
+Engine::Engine()
+{
+    screenSize.x = 464;
+    screenSize.y = 256;
+    Window.create(sf::VideoMode(screenSize.x, screenSize.y), "mavl");
+    Window.setFramerateLimit(60);
+
+    view.reset(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
+    view.setViewport(sf::FloatRect(0.0f, 0.0f, 2.5f, 2.5f));
+//    view.setCenter(sf::Vector2f(300.0f, 300.0f));
+//    view.setSize(sf::Vector2f(1920.0f, 1088.0f));
+}
 
 void Engine::start()
 {
-    Window.create(sf::VideoMode(1920, 1088), "mavl");  // sf::Style::Fullscreen
-    Window.setFramerateLimit(60);
+    srand(time(nullptr));
 
-//    b2Vec2 Gravity(0.0f, 1.0f);
-//    b2World World(Gravity);
+    Level.LoadFile("../GayEngine/levels/start_level/map1.json");
+    Level.setProperties(Level);
 
-    Level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
     while (Window.isOpen()) {
-        sf::Event Event;
-
+        Level.initObjects(Level);
         while (Window.pollEvent(Event)) {
-            if (Event.type == sf::Event::Closed) {
-                Window.close();
-            }
+            input(Event);
         }
-
-        input();
-        update();
+        Level.update(view, screenSize);
         draw();
     }
 }

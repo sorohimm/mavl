@@ -1,38 +1,54 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+// Copyright © 2020 Vladimir Mashir
 //
 
 #include "Engine.h"
 
-void Engine::input()
+void Engine::input(sf::Event &Event)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        Player.moveRight();
-        Player.velocityX = 11;
-    } else {
-        Player.velocityY = 0;
-        Player.stopRight();
-    }
+    switch(Event.type) {
+        case sf::Event::Closed:
+            Window.close();
+            break;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        Player.velocityX = -11;
-        Player.moveLeft();
-    } else {
-        Player.velocityY = 0;
-        Player.stopLeft();
-    }
+        case sf::Event::KeyPressed:
+            if(Event.key.code == sf::Keyboard::Space && playerBody->GetLinearVelocity().y == 0)
+                playerBody->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        Player.velocityY = -40;
-    }
+            if(Event.key.code == sf::Keyboard::D)
+                playerBody->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-        Player.toBegin();
+            if(Event.key.code == sf::Keyboard::A)
+                playerBody->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
+            break;
     }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        Window.close();
-    }
+//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+//        Player.moveRight();
+//        Player.velocityX = 11;
+//    } else {
+//        Player.velocityY = 0;
+//        Player.stopRight();
+//    }
+//
+//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+//        Player.velocityX = -11;
+//        Player.moveLeft();
+//    } else {
+//        Player.velocityY = 0;
+//        Player.stopLeft();
+//    }
+//
+//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+//        Player.velocityY = -40;
+//    }
+//
+//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+//        Player.toBegin();
+//    }
+//
+//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+//        Window.close();
+//    }
 }
 
 

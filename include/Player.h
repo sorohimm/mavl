@@ -5,9 +5,8 @@
 #define GAYENGINE_P_H
 
 #include <SFML/Graphics.hpp>
-#include <Physics.h>
 
-class Player : public Physics
+class Player
 {
 private:
     sf::Vector2f Position;

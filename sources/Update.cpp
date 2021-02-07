@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+// Copyright © 2020 Vladimir Mashir
 //
 
 #include "Engine.h"

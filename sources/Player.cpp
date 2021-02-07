@@ -7,19 +7,12 @@
 Player::Player()
 {
 
-    accelerationX = 0;
-    accelerationY = 0;
-
-    velocityX = 0;
-    velocityY = 0;
-
     Texture.loadFromFile("../GayEngine/levels/textures/mike_image.png");
     Sprite.setTexture(Texture);
-    Sprite.setScale(0.27, 0.27);
+    Sprite.setScale(3, 3);
 
     Position.x = 100;
-    Position.y = groundHeight;
-
+    Position.y = 100;
     isOnGround = true;
 }
 
@@ -60,34 +53,34 @@ void Player::stopJump()
 void Player::toBegin()
 {
     Position.x = 100;
-    Position.y = groundHeight;
+    Position.y = 100;
 }
 
 void Player::update()
 {
-    if (Position.y < groundHeight)
-    {
-        velocityY += gravity;
-    }
+//    if (Position.y < groundHeight)
+//    {
+//        velocityY += gravity;
+//    }
+//
+//    else if (Position.y > groundHeight)
+//    {
+//        Position.y = groundHeight;
+//    }
+//
+//    if (RightPressed)
+//    {
+//        velocityX += accelerationX;
+//        Position.x += velocityX;
+//    }
+//
+//    if (LeftPressed)
+//    {
+//        velocityX -= accelerationX;
+//        Position.x += velocityX;
+//    }
+//
+////    Position.y += velocityY;
 
-    else if (Position.y > groundHeight)
-    {
-        Position.y = groundHeight;
-    }
-
-    if (RightPressed)
-    {
-        velocityX += accelerationX;
-        Position.x += velocityX;
-    }
-
-    if (LeftPressed)
-    {
-        velocityX -= accelerationX;
-        Position.x += velocityX;
-    }
-
-//    Position.y += velocityY;
-
-    Sprite.setPosition(Position);
+//    Sprite.setPosition(Position);
 }
