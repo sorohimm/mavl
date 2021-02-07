@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 find_package(box2d REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 pkg_check_modules(TINYXML tinyxml)
 
 
@@ -15,14 +16,16 @@ set(SOURCE_FILES sources/main.cpp sources/Draw.cpp sources/Input.cpp sources/Eng
 add_executable(GayEngine ${SOURCE_FILES})
 
 if(APPLE)
-	include_directories("/usr/local/include/")
+    include_directories("/usr/local/include/")
 endif()
+
 target_include_directories(GayEngine PUBLIC
 	"include/"
 	${BOX2D_INCLUDE_DIR}
 )
 
 target_link_libraries(GayEngine
+  nlohmann_json::nlohmann_json
 	sfml-system
 	sfml-window
 	sfml-graphics

@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+//  Copyright © 2020 Vladimir Mashir.
 //
 
 #ifndef GAYENGINE_LEVEL_H
@@ -13,12 +13,12 @@
 
 struct Object
 {
-    int GetPropertyInt(std::string name);
-    float GetPropertyFloat(std::string name);
-    std::string GetPropertyString(std::string name);
+    int GetPropertyInt(std::string &input);
+    float GetPropertyFloat(std::string &input);
+    std::string GetPropertyString(const std::string &input);
 
-    std::string   name;
-    std::string   type;
+    std::string name;
+    std::string type;
     sf::Rect<int> rect;
     std::map<std::string, std::string> properties;
 
@@ -34,18 +34,19 @@ struct Layer
 class Level
 {
 public:
-    bool LoadFromFile(std::string &filename);
-    Object GetObject(std::string name);
-    std::vector<Object> GetObjects(std::string name);
+    bool LoadFromFile(const std::string &filename);
+    Object GetObject(const std::string &name);
+    std::vector<Object> GetObjects(const std::string &name);
     void Draw(sf::RenderWindow &window);
     sf::Vector2i GetTileSize();
 
 private:
-    int    width;
-    int    height;
-    int    tileWidth;
-    int    tileHeight;
-    int    firstTileID;
+    int width;
+    int height;
+    int tileWidth;
+    int tileHeight;
+    int firstTileID;
+    std::vector<std::pair<std::string, int>> firstTileIDs;
 
     sf::Rect<float> drawingBounds;
     sf::Texture tileSetImage;

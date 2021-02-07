@@ -1,15 +1,12 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+//  Copyright © 2020 Vladimir Mashir.
 //
 
 #include "Engine.h"
 
 void Engine::draw()
 {
-    Window.clear(sf::Color::White);
-
-    std::string fileName = "../GayEngine/map.tmx";
-    Level.LoadFromFile(fileName);
+    Window.clear(); //sf::Color::White
 
     Level.Draw(Window);
 

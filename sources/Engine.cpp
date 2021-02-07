@@ -14,12 +14,13 @@
 
 void Engine::start()
 {
-    Window.create(sf::VideoMode(480, 240), "Mavl");  // sf::Style::Fullscreen
+    Window.create(sf::VideoMode(1920, 1088), "mavl");  // sf::Style::Fullscreen
     Window.setFramerateLimit(60);
 
 //    b2Vec2 Gravity(0.0f, 1.0f);
 //    b2World World(Gravity);
 
+    Level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
     while (Window.isOpen()) {
         sf::Event Event;
 
