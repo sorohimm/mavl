@@ -18,21 +18,22 @@ add_executable(GayEngine ${SOURCE_FILES})
 if(APPLE)
     include_directories("/usr/local/include/")
 endif()
+
 target_include_directories(GayEngine PUBLIC
-        "include/"
-        ${BOX2D_INCLUDE_DIR}
-        )
+	"include/"
+	${BOX2D_INCLUDE_DIR}
+)
 
 target_link_libraries(GayEngine
-        nlohmann_json::nlohmann_json
-        sfml-system
-        sfml-window
-        sfml-graphics
-        sfml-audio
-        sfml-network
-        ${TINYXML_LINK_LIBRARIES}
-        ${BOX2D_LINK_LIBRARIES}
-        )
+  nlohmann_json::nlohmann_json
+	sfml-system
+	sfml-window
+	sfml-graphics
+	sfml-audio
+	sfml-network
+	${TINYXML_LINK_LIBRARIES}
+	${BOX2D_LINK_LIBRARIES}
+)
 
 
 set(CMAKE_CXX_FLAGS "-fpermissive")
