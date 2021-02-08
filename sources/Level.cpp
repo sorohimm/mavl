@@ -1,24 +1,33 @@
 //
-//  Copyright © 2020 Vladimir Mashir.
+// Copyright © 2020 Vladimir Mashir
 //
 
 #include <Level.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-int Object::GetPropertyInt(std::string &input) {
-    return atoi(properties[input].c_str());
+int Object::GetPropertyInt(std::string &input)
+{
+    return stoi(properties[input]);
 }
 
-float Object::GetPropertyFloat(std::string &input) {
-    return strtod(properties[input].c_str(), nullptr);
+float Object::GetPropertyFloat(std::string &input)
+{
+    return stof(properties[input]);
 }
 
-std::string Object::GetPropertyString(const std::string &input) {
+std::string Object::GetPropertyString(const std::string &input)
+{
     return properties[name];
 }
 
-bool Level::LoadFromFile(const std::string &filename) {
+b2Body* Level::GetPlayerBody()
+{
+    return playerBody;
+}
+
+bool Level::LoadFromFile(const std::string &filename)
+{
     std::fstream map(filename);
 
     if (!map.is_open()) {
@@ -140,9 +149,6 @@ bool Level::LoadFromFile(const std::string &filename) {
                 sprite.setTextureRect(sf::Rect<int>(0, 0, 0, 0));
                 sprite.setPosition(x, y);
 
-//                float Width;
-//                float Height;
-
                 width = object["width"].get<float>();
                 height = object["height"].get<float>();
 
@@ -160,18 +166,14 @@ bool Level::LoadFromFile(const std::string &filename) {
                 thisObject.rect = objectRect;
 
                 if (object.contains("property")) {
-
-//                        while (prop) {
 //                            std::string propertyName  = prop->Attribute("name");
 //                            std::string propertyValue = prop->Attribute("value");
 //
 //                            object.properties[propertyName] = propertyValue;
 //
 //                            prop = prop->NextSiblingElement("property");
-//                        }
 
                 }
-
                 objects.push_back(thisObject);
             }
         }
@@ -179,7 +181,8 @@ bool Level::LoadFromFile(const std::string &filename) {
     return true;
 }
 
-Object Level::GetObject(const std::string &name) {
+Object Level::GetObject(const std::string &name)
+{
     for (const auto &el : objects) {
         if (el.name == name) {
             return el;
@@ -188,7 +191,8 @@ Object Level::GetObject(const std::string &name) {
     return *objects.end();
 }
 
-std::vector<Object> Level::GetObjects(const std::string &name) {
+std::vector<Object> Level::GetObjects(const std::string &name)
+{
     std::vector<Object> vec;
     for (const auto &el : objects) {
         if (el.name == name) {
@@ -198,14 +202,148 @@ std::vector<Object> Level::GetObjects(const std::string &name) {
     return vec;
 }
 
-sf::Vector2i Level::GetTileSize() {
+sf::Vector2i Level::GetTileSize() const
+{
     return sf::Vector2i(tileWidth, tileHeight);
 }
 
-void Level::Draw(sf::RenderWindow &window) {
-    for (size_t layer = 0; layer < layers.size(); layer++) {
-        for (size_t tile = 0; tile < layers[layer].tiles.size(); tile++) {
-            window.draw(layers[layer].tiles[tile]);
+void Level::Draw(sf::RenderWindow &window)
+{
+    for (const auto &layer : layers) {
+        for (const auto &tile : layer.tiles) {
+            window.draw(tile);
         }
     }
+    for(const auto & el : coin) {
+        window.draw(el.sprite);
+    }
+
+    for(const auto & el : coin) {
+        window.draw(el.sprite);
+    }
+}
+
+
+void Level::update(sf::View &view, sf::Vector2i &screenSize)
+{
+    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next)
+    {
+        b2Contact* c = ce->contact;
+
+        for(int i = 0; i < coinBody.size(); i++)
+            if(c->GetFixtureA() == coinBody[i]->GetFixtureList())
+            {
+                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
+                coin.erase(coin.begin() + i);
+                coinBody.erase(coinBody.begin() + i);
+            }
+
+        for(int i = 0; i < enemyBody.size(); i++)
+            if(c->GetFixtureA() == enemyBody[i]->GetFixtureList())
+            {
+                if(playerBody->GetPosition().y < enemyBody[i]->GetPosition().y)
+                {
+                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+
+                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
+                    enemy.erase(enemy.begin() + i);
+                    enemyBody.erase(enemyBody.begin() + i);
+                }
+                else
+                {
+                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x)
+                              ? -1 : 1;
+                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+                }
+            }
+    }
+
+    for(const auto &el : enemyBody)
+    {
+        if(el->GetLinearVelocity() == b2Vec2_zero)
+        {
+            int tmp = (rand() % 2 == 1) ? 1 : -1;
+            el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
+        }
+    }
+
+
+    b2Vec2 pos = playerBody->GetPosition();
+    view.setCenter(pos.x + float(screenSize.x) / 4, pos.y + float(screenSize.y) / 4);
+
+    player.sprite.setPosition(pos.x, pos.y);
+
+    for(int i = 0; i < coin.size(); i++) {
+        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
+    }
+
+    for(int i = 0; i < enemy.size(); i++) {
+        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
+    }
+}
+
+void Level::setProperties(Level &lvl)
+{
+    sf::Vector2i tileSize = lvl.GetTileSize();
+    b2World world(gravity);
+
+    std::vector<Object> block = lvl.GetObjects("solid");
+    for(const auto &el : block)
+    {
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_staticBody;
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
+                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        b2Body* body = world.CreateBody(&bodyDef);
+        b2PolygonShape shape;
+        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        body->CreateFixture(&shape,1.0f);
+    }
+
+    coin = lvl.GetObjects("coin");
+    for(const auto &el : coin)
+    {
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_dynamicBody;
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
+                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        bodyDef.fixedRotation = true;
+        b2Body* body = world.CreateBody(&bodyDef);
+        b2PolygonShape shape;
+        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        body->CreateFixture(&shape,1.0f);
+        coinBody.push_back(body);
+    }
+
+    enemy = lvl.GetObjects("enemy");
+    for(const auto &el: enemy)
+    {
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_dynamicBody;
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
+                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        bodyDef.fixedRotation = true;
+        b2Body* body = world.CreateBody(&bodyDef);
+        b2PolygonShape shape;
+        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        body->CreateFixture(&shape,1.0f);
+        enemyBody.push_back(body);
+    }
+
+
+    player = lvl.GetObject("player");
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(player.rect.left, player.rect.top);
+    bodyDef.fixedRotation = true;
+    playerBody = world.CreateBody(&bodyDef);
+    b2PolygonShape shape; shape.SetAsBox(float(player.rect.width) / 2, float(player.rect.height) / 2);
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &shape;
+    fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
+    playerBody->CreateFixture(&fixtureDef);
+}
+
+Level::Level() {
+    gravity.Set(0.0f, 1.0f);
 }

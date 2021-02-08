@@ -7,8 +7,7 @@
 void Engine::draw()
 {
     Window.clear(); //sf::Color::White
-
+    Window.setView(view);
     Level.Draw(Window);
-
     Window.display();
 }

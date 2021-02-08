@@ -12,10 +12,14 @@
 
 class Engine
 {
+public:
+    Engine();
+    void start();
+    sf::Vector2i GetScreenSize();
+
 private:
     sf::RenderWindow Window;
     sf::Event Event;
-
 
     Player Player;
     Level Level;
@@ -26,11 +30,6 @@ private:
 
     sf::View view;
     sf::Vector2i screenSize;
-
-public:
-    Engine();
-    void start();
-    sf::Vector2i GetScreenSize();
 };
 
 #endif //GAYENGINE_ENGINE_H

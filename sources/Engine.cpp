@@ -1,5 +1,5 @@
 //
-// Copyright © 2020 Vladimir Mashir. All rights reserved.
+// Copyright © 2020 Vladimir Mashir
 //
 
 #include <Engine.h>
@@ -24,13 +24,13 @@ Engine::Engine()
 
 void Engine::start()
 {
-    srand(time(nullptr));
+//    srand(time(nullptr));
 
-    Level.LoadFile("../GayEngine/levels/start_level/map1.json");
+    Level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
     Level.setProperties(Level);
+    Level.initObjects(Level);
 
     while (Window.isOpen()) {
-        Level.initObjects(Level);
         while (Window.pollEvent(Event)) {
             input(Event);
         }

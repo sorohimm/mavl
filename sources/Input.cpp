@@ -4,22 +4,22 @@
 
 #include "Engine.h"
 
-void Engine::input(sf::Event &Event)
+void Engine::input(sf::Event &event)
 {
-    switch(Event.type) {
+    switch(event.type) {
         case sf::Event::Closed:
             Window.close();
             break;
 
         case sf::Event::KeyPressed:
-            if(Event.key.code == sf::Keyboard::Space && playerBody->GetLinearVelocity().y == 0)
-                playerBody->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
+            if(event.key.code == sf::Keyboard::Space && Level.GetPlayerBody()->GetLinearVelocity().y == 0)
+                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
 
-            if(Event.key.code == sf::Keyboard::D)
-                playerBody->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
+            if(event.key.code == sf::Keyboard::D)
+                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
 
-            if(Event.key.code == sf::Keyboard::A)
-                playerBody->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
+            if(event.key.code == sf::Keyboard::A)
+                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
             break;
     }
 //    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
