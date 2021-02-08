@@ -26,7 +26,7 @@ b2Body* Level::GetPlayerBody()
     return playerBody;
 }
 
-bool Level::LoadFromFile(const std::string &filename)
+bool Level::LoadFromFile(std::string &filename)
 {
     std::ifstream map(filename);
 

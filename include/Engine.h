@@ -19,7 +19,7 @@ public:
 private:
     sf::RenderWindow Window;
 
-    Player player;
+//    Player player;
     Level level;
 
     void input(sf::Event&);

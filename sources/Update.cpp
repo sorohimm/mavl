@@ -4,6 +4,6 @@
 
 #include "Engine.h"
 
-void Engine::update() {
-    player.update();
-}
+//void Engine::update() {
+//    player.update();
+//}
