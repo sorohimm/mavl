@@ -23,15 +23,15 @@ Engine::Engine()
 
 void Engine::start()
 {
-    Level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
-    Level.initObjects(Level);
+    level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
+    level.initObjects(level);
 
     while (Window.isOpen()) {
         sf::Event Event;
         while (Window.pollEvent(Event)) {
             input(Event);
         }
-        Level.update(view, screenSize);
+        level.update(view, screenSize);
         draw();
     }
 }

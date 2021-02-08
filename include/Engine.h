@@ -18,10 +18,9 @@ public:
 
 private:
     sf::RenderWindow Window;
-    sf::Event Event;
 
-    Player Player;
-    Level Level;
+    Player player;
+    Level level;
 
     void input(sf::Event&);
     void update();

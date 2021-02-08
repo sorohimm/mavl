@@ -11,11 +11,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
-#include <Engine.h>
 
-class Object
+struct Object
 {
-public:
     int GetPropertyInt(std::string &input);
     float GetPropertyFloat(std::string &input);
     std::string GetPropertyString(const std::string &input);
@@ -28,9 +26,8 @@ public:
     sf::Sprite sprite;
 };
 
-class Layer
+struct Layer
 {
-public:
     int opacity;
     std::vector<sf::Sprite> tiles;
 };

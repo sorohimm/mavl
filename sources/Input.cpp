@@ -12,14 +12,14 @@ void Engine::input(sf::Event &event)
             break;
 
         case sf::Event::KeyPressed:
-            if(event.key.code == sf::Keyboard::Space && Level.GetPlayerBody()->GetLinearVelocity().y == 0)
-                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
+            if(event.key.code == sf::Keyboard::Space && level.GetPlayerBody()->GetLinearVelocity().y == 0)
+                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
 
             if(event.key.code == sf::Keyboard::D)
-                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
+                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
 
             if(event.key.code == sf::Keyboard::A)
-                Level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
+                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
             break;
     }
 //    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {

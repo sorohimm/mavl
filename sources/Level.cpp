@@ -28,7 +28,7 @@ b2Body* Level::GetPlayerBody()
 
 bool Level::LoadFromFile(const std::string &filename)
 {
-    std::fstream map(filename);
+    std::ifstream map(filename);
 
     if (!map.is_open()) {
         std::cout << "loading \"" << filename << "\" failed." << std::endl;
