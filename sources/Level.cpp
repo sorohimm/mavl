@@ -281,8 +281,8 @@ void Level::initObjects(Level &lvl)
     sf::Vector2i tileSize = lvl.GetTileSize();
     b2World world(gravity);
 
-    std::vector<Object> block = lvl.GetObjects("solid");
-    for(const auto &el : block)
+    std::vector<Object> solid = lvl.GetObjects("solid");
+    for(const auto &el : solid)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
@@ -292,21 +292,6 @@ void Level::initObjects(Level &lvl)
         b2PolygonShape shape;
         shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
         body->CreateFixture(&shape,1.0f);
-    }
-
-    coin = lvl.GetObjects("coin");
-    for(const auto &el : coin)
-    {
-        b2BodyDef bodyDef;
-        bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
-                             float(el.rect.top) + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
-        bodyDef.fixedRotation = true;
-        b2Body* body = world.CreateBody(&bodyDef);
-        b2PolygonShape shape;
-        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
-        body->CreateFixture(&shape,1.0f);
-        coinBody.push_back(body);
     }
 
     enemy = lvl.GetObjects("enemy");
