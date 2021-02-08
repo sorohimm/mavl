@@ -27,6 +27,7 @@ void Engine::start()
     Level.initObjects(Level);
 
     while (Window.isOpen()) {
+        sf::Event Event;
         while (Window.pollEvent(Event)) {
             input(Event);
         }
