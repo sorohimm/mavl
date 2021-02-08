@@ -7,7 +7,7 @@
 Player::Player()
 {
 
-    Texture.loadFromFile("../GayEngine/levels/textures/mike_image.png");
+    Texture.loadFromFile("../GayEngine/levels/textures/.png");
     Sprite.setTexture(Texture);
     Sprite.setScale(3, 3);
 

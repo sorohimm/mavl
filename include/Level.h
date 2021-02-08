@@ -35,7 +35,7 @@ struct Layer
 class Level
 {
 public:
-    bool LoadFromFile(const std::string &filename);
+    bool LoadFromFile(std::string &filename);
     Object GetObject(const std::string &name);
     std::vector<Object> GetObjects(const std::string &name);
     sf::Vector2i GetTileSize() const;

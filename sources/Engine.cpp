@@ -23,7 +23,9 @@ Engine::Engine()
 
 void Engine::start()
 {
-    level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
+    std::string filename1 = "/Users/sorohimm/CLionProjects/GayEngine/levels/start_level/map1.json";
+    std::string filename = "../GayEngine/levels/start_level/map.json";
+    level.LoadFromFile(filename1);
     level.initObjects(level);
 
     while (Window.isOpen()) {
