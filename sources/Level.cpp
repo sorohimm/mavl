@@ -107,11 +107,11 @@ bool Level::LoadFromFile(const std::string &filename)
                 for (const auto &el : layer["data"]) {
                     int subRectToUse = el.get<int>() - firstTileIDs[0].second;
 
-                    if (subRectToUse >= 0) {
+                    if (subRectToUse >= 0 && subRectToUse < subRects.size()) {
                         sf::Sprite sprite;
 
                         sprite.setTexture(tileSetImage);
-                        sprite.setTextureRect(subRects[subRectToUse]);
+                        sprite.setTextureRect(subRects.at(subRectToUse));
                         sprite.setPosition( x * float(tileWidth), y * float(tileHeight));
                         sprite.setColor(sf::Color(255, 255, 255, thisLayer.opacity));
 
@@ -188,7 +188,7 @@ Object Level::GetObject(const std::string &name)
             return el;
         }
     }
-    return *objects.end();
+    return objects.back(); // разыменование end() ай-ай-ай
 }
 
 std::vector<Object> Level::GetObjects(const std::string &name)
