@@ -45,10 +45,8 @@ public:
 
     void Draw(sf::RenderWindow &window);
     void update(sf::View&, sf::Vector2i&);
-    void setProperties(Level&);
     void initObjects(Level&);
     b2Body* GetPlayerBody();
-    Level();
 
 private:
     int width;

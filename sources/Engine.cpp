@@ -3,7 +3,6 @@
 //
 
 #include <Engine.h>
-#include <Level.h>
 
 sf::Vector2i Engine::GetScreenSize() {
     return screenSize;
@@ -24,10 +23,7 @@ Engine::Engine()
 
 void Engine::start()
 {
-//    srand(time(nullptr));
-
     Level.LoadFromFile("../GayEngine/levels/start_level/map1.json");
-    Level.setProperties(Level);
     Level.initObjects(Level);
 
     while (Window.isOpen()) {

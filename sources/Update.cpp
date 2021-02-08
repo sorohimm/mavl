@@ -6,4 +6,5 @@
 
 void Engine::update() {
     Player.update();
+    Level.update(sf::View &view, sf::Vector2i &screenSize);
 }

@@ -226,36 +226,31 @@ void Level::Draw(sf::RenderWindow &window)
 
 void Level::update(sf::View &view, sf::Vector2i &screenSize)
 {
-    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next)
-    {
+    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
         b2Contact* c = ce->contact;
 
         for(int i = 0; i < coinBody.size(); i++)
-            if(c->GetFixtureA() == coinBody[i]->GetFixtureList())
-            {
+            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
                 coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
                 coin.erase(coin.begin() + i);
                 coinBody.erase(coinBody.begin() + i);
             }
 
-        for(int i = 0; i < enemyBody.size(); i++)
-            if(c->GetFixtureA() == enemyBody[i]->GetFixtureList())
-            {
-                if(playerBody->GetPosition().y < enemyBody[i]->GetPosition().y)
-                {
+        for(int i = 0; i < enemyBody.size(); i++) {
+            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
+                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
                     playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
 
                     enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
                     enemy.erase(enemy.begin() + i);
                     enemyBody.erase(enemyBody.begin() + i);
-                }
-                else
-                {
+                } else {
                     int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x)
                               ? -1 : 1;
                     playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
                 }
             }
+        }
     }
 
     for(const auto &el : enemyBody)
@@ -266,7 +261,6 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
             el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
         }
     }
-
 
     b2Vec2 pos = playerBody->GetPosition();
     view.setCenter(pos.x + float(screenSize.x) / 4, pos.y + float(screenSize.y) / 4);
@@ -282,7 +276,7 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
     }
 }
 
-void Level::setProperties(Level &lvl)
+void Level::initObjects(Level &lvl)
 {
     sf::Vector2i tileSize = lvl.GetTileSize();
     b2World world(gravity);
@@ -292,8 +286,8 @@ void Level::setProperties(Level &lvl)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
-                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
+                             float(el.rect.top) + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
         b2Body* body = world.CreateBody(&bodyDef);
         b2PolygonShape shape;
         shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
@@ -305,8 +299,8 @@ void Level::setProperties(Level &lvl)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
-                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
+                             float(el.rect.top) + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
         bodyDef.fixedRotation = true;
         b2Body* body = world.CreateBody(&bodyDef);
         b2PolygonShape shape;
@@ -320,8 +314,8 @@ void Level::setProperties(Level &lvl)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * float((el.rect.width / tileSize.x - 1)),
-                             float(el.rect.top) + float(tileSize.y) / 2 * float((el.rect.height / tileSize.y - 1)));
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
+                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
         bodyDef.fixedRotation = true;
         b2Body* body = world.CreateBody(&bodyDef);
         b2PolygonShape shape;
@@ -342,8 +336,4 @@ void Level::setProperties(Level &lvl)
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
     playerBody->CreateFixture(&fixtureDef);
-}
-
-Level::Level() {
-    gravity.Set(0.0f, 1.0f);
 }
