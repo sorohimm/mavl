@@ -202,75 +202,6 @@ sf::Vector2i Level::GetTileSize() const
     return sf::Vector2i(tileWidth, tileHeight);
 }
 
-void Level::Draw(sf::RenderWindow &window)
-{
-    for (const auto &layer : layers) {
-        for (const auto &tile : layer.tiles) {
-            window.draw(tile);
-        }
-    }
-    for(const auto & el : enemy) {
-        window.draw(el.sprite);
-    }
-
-//    for(const auto & el : coin) {
-//        window.draw(el.sprite);
-//    }
-}
-
-
-void Level::update(sf::View &view, sf::Vector2i &screenSize)
-{
-//    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
-//        b2Contact* c = ce->contact;
-//
-//        for(int i = 0; i < coinBody.size(); i++)
-//            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
-//                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
-//                coin.erase(coin.begin() + i);
-//                coinBody.erase(coinBody.begin() + i);
-//            }
-//
-//        for(int i = 0; i < enemyBody.size(); i++) {
-//            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
-//                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
-//                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
-//
-//                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
-//                    enemy.erase(enemy.begin() + i);
-//                    enemyBody.erase(enemyBody.begin() + i);
-//                } else {
-//                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x)
-//                              ? -1 : 1;
-//                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
-//                }
-//            }
-//        }
-//    }
-
-    for(const auto &el : enemyBody)
-    {
-        if(el->GetLinearVelocity() == b2Vec2_zero)
-        {
-            int tmp = (rand() % 2 == 1) ? 1 : -1;
-            el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
-        }
-    }
-
-    b2Vec2 pos = playerBody->GetPosition();
-    view.setCenter(pos.x + float(screenSize.x) / 4, pos.y + float(screenSize.y) / 4);
-
-    player.sprite.setPosition(pos.x, pos.y);
-
-//    for(int i = 0; i < coin.size(); i++) {
-//        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
-//    }
-
-//    for(int i = 0; i < enemy.size(); i++) {
-//        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
-//    }
-}
-
 void Level::initObjects(Level &lvl)
 {
     sf::Vector2i tileSize = lvl.GetTileSize();
@@ -289,20 +220,20 @@ void Level::initObjects(Level &lvl)
         body->CreateFixture(&shape,1.0f);
     }
 
-//    enemy = lvl.GetObjects("enemy");
-//    for(const auto &el: enemy)
-//    {
-//        b2BodyDef bodyDef;
-//        bodyDef.type = b2_dynamicBody;
-//        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
-//                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
-//        bodyDef.fixedRotation = true;
-//        b2Body* body = world.CreateBody(&bodyDef);
-//        b2PolygonShape shape;
-//        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
-//        body->CreateFixture(&shape,1.0f);
-//        enemyBody.push_back(body);
-//    }
+    enemy = lvl.GetObjects("enemy");
+    for(const auto &el: enemy)
+    {
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_dynamicBody;
+        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
+                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
+        bodyDef.fixedRotation = true;
+        b2Body* body = world.CreateBody(&bodyDef);
+        b2PolygonShape shape;
+        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        body->CreateFixture(&shape,1.0f);
+        enemyBody.push_back(body);
+    }
 
 
     player = lvl.GetObject("player");
@@ -316,4 +247,71 @@ void Level::initObjects(Level &lvl)
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
     playerBody->CreateFixture(&fixtureDef);
+}
+
+void Level::update(sf::View &view, sf::Vector2i &screenSize)
+{
+    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
+        b2Contact* c = ce->contact;
+
+        for(int i = 0; i < coinBody.size(); i++)
+            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
+                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
+                coin.erase(coin.begin() + i);
+                coinBody.erase(coinBody.begin() + i);
+            }
+
+        for(int i = 0; i < enemyBody.size(); i++) {
+            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
+                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
+                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+
+                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
+                    enemy.erase(enemy.begin() + i);
+                    enemyBody.erase(enemyBody.begin() + i);
+                } else {
+                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
+                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+                }
+            }
+        }
+    }
+
+//    for(const auto &el : enemyBody)
+//    {
+//        if(el->GetLinearVelocity() == b2Vec2_zero)
+//        {
+//            int tmp = (rand() % 2 == 1) ? 1 : -1;
+//            el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
+//        }
+//    }
+
+    b2Vec2 pos = playerBody->GetPosition();
+    view.setCenter(pos.x + float(screenSize.x) / 3, pos.y + float(screenSize.y) / 3);
+
+    player.sprite.setPosition(pos.x, pos.y);
+
+//    for(int i = 0; i < coin.size(); i++) {
+//        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
+//    }
+
+//    for(int i = 0; i < enemy.size(); i++) {
+//        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
+//    }
+}
+
+void Level::Draw(sf::RenderWindow &window)
+{
+    for (const auto &layer : layers) {
+        for (const auto &tile : layer.tiles) {
+            window.draw(tile);
+        }
+    }
+    for(const auto & el : enemy) {
+        window.draw(el.sprite);
+    }
+
+//    for(const auto & el : coin) {
+//        window.draw(el.sprite);
+//    }
 }

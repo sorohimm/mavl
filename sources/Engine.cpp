@@ -17,7 +17,6 @@ Engine::Engine()
 
     view.reset(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
     view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
-//    view.setCenter(sf::Vector2f(300.0f, 300.0f));
 //    view.setSize(sf::Vector2f(1920.0f, 1088.0f));
 }
 

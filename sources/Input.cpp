@@ -12,43 +12,23 @@ void Engine::input(sf::Event &event)
             break;
 
         case sf::Event::KeyPressed:
-            if(event.key.code == sf::Keyboard::Space && level.GetPlayerBody()->GetLinearVelocity().y == 0)
+            if(event.key.code == sf::Keyboard::Space && level.GetPlayerBody()->GetLinearVelocity().y == 0) {
                 level.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
+            }
 
-            if(event.key.code == sf::Keyboard::D)
+            if(event.key.code == sf::Keyboard::D) {
                 level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
+            }
 
-            if(event.key.code == sf::Keyboard::A)
+            if(event.key.code == sf::Keyboard::A) {
                 level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
+            }
+
+            if(event.key.code == sf::Keyboard::Escape) {
+                Window.close();
+            }
             break;
     }
-//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-//        Player.moveRight();
-//        Player.velocityX = 11;
-//    } else {
-//        Player.velocityY = 0;
-//        Player.stopRight();
-//    }
-//
-//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-//        Player.velocityX = -11;
-//        Player.moveLeft();
-//    } else {
-//        Player.velocityY = 0;
-//        Player.stopLeft();
-//    }
-//
-//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-//        Player.velocityY = -40;
-//    }
-//
-//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-//        Player.toBegin();
-//    }
-//
-//    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-//        Window.close();
-//    }
 }
 
 
