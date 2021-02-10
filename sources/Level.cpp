@@ -5,6 +5,7 @@
 #include <Level.h>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <algorithm>
 
 int Object::GetPropertyInt(std::string &input)
 {
@@ -18,7 +19,7 @@ float Object::GetPropertyFloat(std::string &input)
 
 std::string Object::GetPropertyString(const std::string &input)
 {
-    return properties[name];
+    return properties.at(input);
 }
 
 b2Body* Level::GetPlayerBody()
@@ -26,7 +27,7 @@ b2Body* Level::GetPlayerBody()
     return playerBody;
 }
 
-bool Level::LoadFromFile(std::string &filename)
+bool Level::LoadFile(std::string &filename)
 {
     std::ifstream map(filename);
 
@@ -87,7 +88,6 @@ bool Level::LoadFromFile(std::string &filename)
 
     /* layer processing */
     for (const auto &layer : jmap["layers"]) {
-
         if (layer["type"] == "tilelayer") {
 
             /* create a new layer */
@@ -112,7 +112,7 @@ bool Level::LoadFromFile(std::string &filename)
 
                         sprite.setTexture(tileSetImage);
                         sprite.setTextureRect(subRects[subRectToUse]);
-                        sprite.setPosition( x * float(tileWidth), y * float(tileHeight));
+                        sprite.setPosition(x * float(tileWidth), y * float(tileHeight));
                         sprite.setColor(sf::Color(255, 255, 255, thisLayer.opacity));
 
                         thisLayer.tiles.push_back(sprite);
@@ -126,9 +126,9 @@ bool Level::LoadFromFile(std::string &filename)
                             y = 0;
                         }
                     }
-                    layers.push_back(thisLayer);
                 }
             }
+            layers.push_back(thisLayer);
         }
 
         if (layer["type"] == "objectgroup") {
@@ -183,12 +183,7 @@ bool Level::LoadFromFile(std::string &filename)
 
 Object Level::GetObject(const std::string &name)
 {
-    for (const auto &el : objects) {
-        if (el.name == name) {
-            return el;
-        }
-    }
-    return *objects.end();
+    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) -> bool { return objectEl.name == name; });
 }
 
 std::vector<Object> Level::GetObjects(const std::string &name)
@@ -214,44 +209,44 @@ void Level::Draw(sf::RenderWindow &window)
             window.draw(tile);
         }
     }
-    for(const auto & el : coin) {
+    for(const auto & el : enemy) {
         window.draw(el.sprite);
     }
 
-    for(const auto & el : coin) {
-        window.draw(el.sprite);
-    }
+//    for(const auto & el : coin) {
+//        window.draw(el.sprite);
+//    }
 }
 
 
 void Level::update(sf::View &view, sf::Vector2i &screenSize)
 {
-    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
-        b2Contact* c = ce->contact;
-
-        for(int i = 0; i < coinBody.size(); i++)
-            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
-                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
-                coin.erase(coin.begin() + i);
-                coinBody.erase(coinBody.begin() + i);
-            }
-
-        for(int i = 0; i < enemyBody.size(); i++) {
-            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
-                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
-                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
-
-                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
-                    enemy.erase(enemy.begin() + i);
-                    enemyBody.erase(enemyBody.begin() + i);
-                } else {
-                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x)
-                              ? -1 : 1;
-                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
-                }
-            }
-        }
-    }
+//    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
+//        b2Contact* c = ce->contact;
+//
+//        for(int i = 0; i < coinBody.size(); i++)
+//            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
+//                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
+//                coin.erase(coin.begin() + i);
+//                coinBody.erase(coinBody.begin() + i);
+//            }
+//
+//        for(int i = 0; i < enemyBody.size(); i++) {
+//            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
+//                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
+//                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+//
+//                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
+//                    enemy.erase(enemy.begin() + i);
+//                    enemyBody.erase(enemyBody.begin() + i);
+//                } else {
+//                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x)
+//                              ? -1 : 1;
+//                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+//                }
+//            }
+//        }
+//    }
 
     for(const auto &el : enemyBody)
     {
@@ -267,13 +262,13 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
 
     player.sprite.setPosition(pos.x, pos.y);
 
-    for(int i = 0; i < coin.size(); i++) {
-        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
-    }
+//    for(int i = 0; i < coin.size(); i++) {
+//        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
+//    }
 
-    for(int i = 0; i < enemy.size(); i++) {
-        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
-    }
+//    for(int i = 0; i < enemy.size(); i++) {
+//        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
+//    }
 }
 
 void Level::initObjects(Level &lvl)
@@ -294,20 +289,20 @@ void Level::initObjects(Level &lvl)
         body->CreateFixture(&shape,1.0f);
     }
 
-    enemy = lvl.GetObjects("enemy");
-    for(const auto &el: enemy)
-    {
-        b2BodyDef bodyDef;
-        bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
-                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
-        bodyDef.fixedRotation = true;
-        b2Body* body = world.CreateBody(&bodyDef);
-        b2PolygonShape shape;
-        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
-        body->CreateFixture(&shape,1.0f);
-        enemyBody.push_back(body);
-    }
+//    enemy = lvl.GetObjects("enemy");
+//    for(const auto &el: enemy)
+//    {
+//        b2BodyDef bodyDef;
+//        bodyDef.type = b2_dynamicBody;
+//        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
+//                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
+//        bodyDef.fixedRotation = true;
+//        b2Body* body = world.CreateBody(&bodyDef);
+//        b2PolygonShape shape;
+//        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+//        body->CreateFixture(&shape,1.0f);
+//        enemyBody.push_back(body);
+//    }
 
 
     player = lvl.GetObject("player");

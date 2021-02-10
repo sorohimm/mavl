@@ -35,7 +35,7 @@ struct Layer
 class Level
 {
 public:
-    bool LoadFromFile(std::string &filename);
+    bool LoadFile(std::string &filename);
     Object GetObject(const std::string &name);
     std::vector<Object> GetObjects(const std::string &name);
     sf::Vector2i GetTileSize() const;
@@ -50,7 +50,7 @@ private:
     int height;
     int tileWidth;
     int tileHeight;
-//    int firstTileID;
+    int firstTileID;
     std::vector<std::pair<std::string, int>> firstTileIDs;
 
     sf::Rect<float> drawingBounds;

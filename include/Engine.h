@@ -23,7 +23,7 @@ private:
     Level level;
 
     void input(sf::Event&);
-    void update();
+//    void update();
     void draw();
 
     sf::View view;

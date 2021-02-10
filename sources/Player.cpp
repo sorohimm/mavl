@@ -7,7 +7,7 @@
 Player::Player()
 {
 
-    Texture.loadFromFile("../GayEngine/levels/textures/.png");
+    Texture.loadFromFile("/Users/sorohimm/CLionProjects/GayEngine/levels/start_level/dinoCharactersVersion1.1/sheets/DinoSprites - mort.png");
     Sprite.setTexture(Texture);
     Sprite.setScale(3, 3);
 
