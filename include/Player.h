@@ -18,22 +18,23 @@ private:
     bool RightPressed;
     bool isSelect;
     bool isMove;
+    sf::Rect<int> rect;
 
 public:
     Player();
 
-    sf::Sprite getSprite();
-
     void moveLeft();
     void moveRight();
     void Jump();
-
     void stopLeft();
     void stopRight();
     void stopJump();
     void toBegin();
-
     void update();
+
+    void SetRect(sf::Rect<int> &inputRect);
+    sf::Rect<int> GetRect() const;
+    sf::Sprite GetSprite();
 };
 
 #endif //GAMEENGINE_P_H

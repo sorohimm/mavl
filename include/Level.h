@@ -9,20 +9,12 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <Player.h>
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 
 class Object
 {
-public:
-    sf::Rect<int> GetRect() const;
-    std::string GetName() const;
-    sf::Sprite GetSprite() const;
-    void SetName(std::string&);
-    void SetType(std::string&);
-    void SetSprite(sf::Sprite&);
-    void SetRect(sf::Rect<int>&);
-
 private:
     int GetPropertyInt(std::string &input);
     float GetPropertyFloat(std::string &input);
@@ -32,6 +24,15 @@ private:
     sf::Rect<int> rect;
     std::map<std::string, std::string> properties;
     sf::Sprite sprite;
+
+public:
+    sf::Rect<int> GetRect() const;
+    std::string GetName() const;
+    sf::Sprite GetSprite() const;
+    void SetName(std::string&);
+    void SetType(std::string&);
+    void SetSprite(sf::Sprite&);
+    void SetRect(sf::Rect<int>&);
 };
 
 class Layer
@@ -50,18 +51,6 @@ private:
 
 class Level
 {
-public:
-    bool LoadFile(std::string &filename);
-    Object GetObject(const std::string &name);
-    std::vector<Object> GetObjects(const std::string &name);
-    sf::Vector2i GetTileSize() const;
-
-    void Draw(sf::RenderWindow &window);
-    void update(sf::View&, sf::Vector2i&);
-    void initObjects(Level&);
-    b2Body* GetPlayerBody();
-    Level();
-
 private:
     int width;
     int height;
@@ -75,7 +64,7 @@ private:
     std::vector<Object> objects;
     std::vector<Layer> layers;
 
-    Object player;
+    Player player;
     b2Body* playerBody;
 
     std::vector<Object> coin;
@@ -86,6 +75,18 @@ private:
 
     b2Vec2 gravity;
     b2World* world;
+
+public:
+    bool LoadFile(std::string&);
+    Object GetObject(const std::string&);
+    std::vector<Object> GetObjects(const std::string&);
+    sf::Vector2i GetTileSize() const;
+    b2Body* GetPlayerBody();
+    void Draw(sf::RenderWindow&);
+    void update(sf::View&, sf::Vector2i&);
+    void initObjects(Level&);
+
+    Level();
 };
 
 #endif //GAYENGINE_LEVEL_H
