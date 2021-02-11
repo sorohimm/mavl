@@ -28,10 +28,7 @@ void Engine::start()
     level.initObjects(level);
 
     while (Window.isOpen()) {
-        sf::Event Event;
-        while (Window.pollEvent(Event)) {
-            input(Event);
-        }
+        input();
         level.update(view, screenSize);
         draw();
     }
