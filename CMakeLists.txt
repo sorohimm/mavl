@@ -12,11 +12,11 @@ set(SOURCE_FILES sources/main.cpp sources/Draw.cpp sources/Input.cpp sources/Eng
 
 add_executable(GayEngine ${SOURCE_FILES})
 
-target_include_directories(GayEngine PUBLIC
-	"include/"
-)
+#target_include_directories(GayEngine PUBLIC
+#	"include/"
+#)
 
-#include_directories(include/)
+include_directories(include/)
 
 target_link_libraries(GayEngine
 	box2d::box2d

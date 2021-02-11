@@ -12,9 +12,9 @@
 class Engine
 {
 public:
-    Engine();
     void start();
     sf::Vector2i GetScreenSize();
+    Engine();
 
 private:
     sf::RenderWindow Window;

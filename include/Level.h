@@ -40,9 +40,7 @@ public:
     [[nodiscard]] std::vector<sf::Sprite> GetTilesVector() const;
     [[nodiscard]] int GetOpacity() const;
     template <class T>
-    void SetOpacity(T& op) {
-        opacity = op;
-    }
+    void SetOpacity(T&);
     void AddSprite(sf::Sprite&);
 
 private:
@@ -62,6 +60,7 @@ public:
     void update(sf::View&, sf::Vector2i&);
     void initObjects(Level&);
     b2Body* GetPlayerBody();
+    Level();
 
 private:
     int width;
@@ -86,6 +85,7 @@ private:
     std::vector<b2Body*> enemyBody;
 
     b2Vec2 gravity;
+    b2World* world;
 };
 
 #endif //GAYENGINE_LEVEL_H

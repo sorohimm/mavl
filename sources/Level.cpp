@@ -16,9 +16,10 @@ std::vector<sf::Sprite> Layer::GetTilesVector() const {
     return tiles;
 }
 
-//void Layer::SetOpacity(T op) {
-//
-//}
+template <class T>
+void Layer::SetOpacity(T &op) {
+    opacity = op;
+}
 
 void Layer::AddSprite(sf::Sprite &inputSprite) {
     tiles.push_back(inputSprite);
@@ -255,7 +256,6 @@ sf::Vector2i Level::GetTileSize() const
 void Level::initObjects(Level &lvl)
 {
     sf::Vector2i tileSize = lvl.GetTileSize();
-    b2World world(gravity);
 
     std::vector<Object> solid = lvl.GetObjects("solid");
     for(const auto &el : solid)
@@ -264,7 +264,7 @@ void Level::initObjects(Level &lvl)
         bodyDef.type = b2_staticBody;
         bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
                              float(el.GetRect().top) + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
-        b2Body* body = world.CreateBody(&bodyDef);
+        b2Body* body = world->CreateBody(&bodyDef);
         b2PolygonShape shape;
         shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
         body->CreateFixture(&shape,1.0f);
@@ -278,20 +278,19 @@ void Level::initObjects(Level &lvl)
         bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
                              float(el.GetRect().top)  + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
         bodyDef.fixedRotation = true;
-        b2Body* body = world.CreateBody(&bodyDef);
+        b2Body* body = world->CreateBody(&bodyDef);
         b2PolygonShape shape;
         shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
         body->CreateFixture(&shape,1.0f);
         enemyBody.push_back(body);
     }
 
-
     player = lvl.GetObject("player");
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(player.GetRect().left, player.GetRect().top);
     bodyDef.fixedRotation = true;
-    playerBody = world.CreateBody(&bodyDef);
+    playerBody = world->CreateBody(&bodyDef);
     b2PolygonShape shape;
     shape.SetAsBox(float(player.GetRect().width) / 2, float(player.GetRect().height) / 2);
     b2FixtureDef fixtureDef;
@@ -302,32 +301,34 @@ void Level::initObjects(Level &lvl)
 
 void Level::update(sf::View &view, sf::Vector2i &screenSize)
 {
-//    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
-//        b2Contact* c = ce->contact;
-//
-//         for(int i = 0; i < coinBody.size(); i++) {
-//            if (c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
-//                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
-//                coin.erase(coin.begin() + i);
-//                coinBody.erase(coinBody.begin() + i);
-//            }
-//        }
-//
-//        for(int i = 0; i < enemyBody.size(); i++) {
-//            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
-//                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
-//                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
-//
-//                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
-//                    enemy.erase(enemy.begin() + i);
-//                    enemyBody.erase(enemyBody.begin() + i);
-//                } else {
-//                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
-//                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
-//                }
-//            }
-//        }
-//    }
+    world->Step(1.0f / 60.0f, 1, 1);
+
+    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
+        b2Contact* c = ce->contact;
+
+         for(int i = 0; i < coinBody.size(); i++) {
+            if (c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
+                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
+                coin.erase(coin.begin() + i);
+                coinBody.erase(coinBody.begin() + i);
+            }
+         }
+
+        for(int i = 0; i < enemyBody.size(); i++) {
+            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
+                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
+                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+
+                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
+                    enemy.erase(enemy.begin() + i);
+                    enemyBody.erase(enemyBody.begin() + i);
+                } else {
+                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
+                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+                }
+            }
+        }
+    }
 
     for(const auto &el : enemyBody)
     {
@@ -366,4 +367,9 @@ void Level::Draw(sf::RenderWindow &window)
     for(const auto & el : coin) {
         window.draw(el.GetSprite());
     }
+}
+
+Level::Level() {
+    gravity.Set(1.0f, 0.0f);
+    world = new b2World(gravity);
 }
