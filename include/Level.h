@@ -12,22 +12,32 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 
-struct Object
+class Object
 {
+public:
+    sf::Rect<int> GetRect() const;
+    std::string GetName() const;
+    sf::Sprite GetSprite() const;
+    void SetName(std::string&);
+    void SetType(std::string&);
+    void SetSprite(sf::Sprite&);
+    void SetRect(sf::Rect<int>&);
+
+
+private:
     int GetPropertyInt(std::string &input);
     float GetPropertyFloat(std::string &input);
     std::string GetPropertyString(const std::string &input);
-
     std::string name;
     std::string type;
     sf::Rect<int> rect;
     std::map<std::string, std::string> properties;
-
     sf::Sprite sprite;
 };
 
-struct Layer
+class Layer
 {
+public:
     int opacity;
     std::vector<sf::Sprite> tiles;
 };

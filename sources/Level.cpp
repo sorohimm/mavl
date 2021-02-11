@@ -27,6 +27,34 @@ b2Body* Level::GetPlayerBody()
     return playerBody;
 }
 
+sf::Rect<int> Object::GetRect() const {
+    return rect;
+}
+
+std::string Object::GetName() const {
+    return name;
+}
+
+sf::Sprite Object::GetSprite() const {
+    return sprite;
+}
+
+void Object::SetName(std::string &inputName) {
+    name = inputName;
+}
+
+void Object::SetType(std::string &inputType) {
+    type = inputType;
+}
+
+void Object::SetSprite(sf::Sprite &inputSprite) {
+    sprite = inputSprite;
+}
+
+void Object::SetRect(sf::Rect<int> &inputRect) {
+    rect = inputRect;
+}
+
 bool Level::LoadFile(std::string &filename)
 {
     std::ifstream map(filename);
@@ -153,9 +181,9 @@ bool Level::LoadFile(std::string &filename)
                 height = object["height"].get<float>();
 
                 Object thisObject;
-                thisObject.name = objectName;
-                thisObject.type = objectType;
-                thisObject.sprite = sprite;
+                thisObject.SetName(objectName);
+                thisObject.SetType(objectType);
+                thisObject.SetSprite(sprite);
 
                 sf::Rect<int> objectRect;
                 objectRect.top = y;
@@ -163,7 +191,7 @@ bool Level::LoadFile(std::string &filename)
                 objectRect.height = height;
                 objectRect.width = width;
 
-                thisObject.rect = objectRect;
+                thisObject.SetRect(objectRect);
 
                 if (object.contains("property")) {
 //                            std::string propertyName  = prop->Attribute("name");
@@ -183,14 +211,14 @@ bool Level::LoadFile(std::string &filename)
 
 Object Level::GetObject(const std::string &name)
 {
-    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) -> bool { return objectEl.name == name; });
+    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) -> bool { return objectEl.GetName() == name; });
 }
 
 std::vector<Object> Level::GetObjects(const std::string &name)
 {
     std::vector<Object> vec;
     for (const auto &el : objects) {
-        if (el.name == name) {
+        if (el.GetName() == name) {
             vec.push_back(el);
         }
     }
@@ -212,11 +240,11 @@ void Level::initObjects(Level &lvl)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
-                             float(el.rect.top) + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
+        bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
+                             float(el.GetRect().top) + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
         b2Body* body = world.CreateBody(&bodyDef);
         b2PolygonShape shape;
-        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
         body->CreateFixture(&shape,1.0f);
     }
 
@@ -225,12 +253,12 @@ void Level::initObjects(Level &lvl)
     {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.rect.left) + float(tileSize.x) / 2 * (float(el.rect.width) / float(tileSize.x - 1)),
-                             float(el.rect.top)  + float(tileSize.y) / 2 * (float(el.rect.height / float(tileSize.y - 1))));
+        bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
+                             float(el.GetRect().top)  + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
         bodyDef.fixedRotation = true;
         b2Body* body = world.CreateBody(&bodyDef);
         b2PolygonShape shape;
-        shape.SetAsBox(float(el.rect.width) / 2, float(el.rect.height) / 2);
+        shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
         body->CreateFixture(&shape,1.0f);
         enemyBody.push_back(body);
     }
@@ -239,10 +267,11 @@ void Level::initObjects(Level &lvl)
     player = lvl.GetObject("player");
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(player.rect.left, player.rect.top);
+    bodyDef.position.Set(player.GetRect().left, player.GetRect().top);
     bodyDef.fixedRotation = true;
     playerBody = world.CreateBody(&bodyDef);
-    b2PolygonShape shape; shape.SetAsBox(float(player.rect.width) / 2, float(player.rect.height) / 2);
+    b2PolygonShape shape;
+    shape.SetAsBox(float(player.GetRect().width) / 2, float(player.GetRect().height) / 2);
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
@@ -289,7 +318,7 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
     b2Vec2 pos = playerBody->GetPosition();
     view.setCenter(pos.x + float(screenSize.x) / 3, pos.y + float(screenSize.y) / 3);
 
-    player.sprite.setPosition(pos.x, pos.y);
+    player.GetSprite().setPosition(pos.x, pos.y);
 
 //    for(int i = 0; i < coin.size(); i++) {
 //        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
@@ -308,7 +337,7 @@ void Level::Draw(sf::RenderWindow &window)
         }
     }
     for(const auto & el : enemy) {
-        window.draw(el.sprite);
+        window.draw(el.GetSprite());
     }
 
 //    for(const auto & el : coin) {
