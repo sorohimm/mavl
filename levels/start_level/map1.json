@@ -617,7 +617,7 @@
         {
          "columns":12,
          "firstgid":1,
-         "image":"/Users/sorohimm/CLionProjects/GayEngine/ground.png",
+         "image":"../GayEngine/ground.png",
          "imageheight":112,
          "imagewidth":192,
          "margin":0,

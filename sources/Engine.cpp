@@ -22,16 +22,13 @@ Engine::Engine()
 
 void Engine::start()
 {
-    std::string filename1 = "/Users/sorohimm/CLionProjects/GayEngine/levels/start_level/map1.json";
+    std::string filename1 = "../GayEngine/levels/start_level/map1.json";
     std::string filename = "../GayEngine/levels/start_level/map.json";
     level.LoadFile(filename1);
     level.initObjects(level);
 
     while (Window.isOpen()) {
-        sf::Event Event;
-        while (Window.pollEvent(Event)) {
-            input(Event);
-        }
+        input();
         level.update(view, screenSize);
         draw();
     }

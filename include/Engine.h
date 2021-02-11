@@ -22,7 +22,7 @@ private:
 //    Player player;
     Level level;
 
-    void input(sf::Event&);
+    void input();
 //    void update();
     void draw();
 

@@ -4,31 +4,35 @@
 
 #include "Engine.h"
 
-void Engine::input(sf::Event &event)
+void Engine::input()
 {
-    switch(event.type) {
-        case sf::Event::Closed:
-            Window.close();
-            break;
-
-        case sf::Event::KeyPressed:
-            if(event.key.code == sf::Keyboard::Space && level.GetPlayerBody()->GetLinearVelocity().y == 0) {
-                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -15.0f));
-            }
-
-            if(event.key.code == sf::Keyboard::D) {
-                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
-            }
-
-            if(event.key.code == sf::Keyboard::A) {
-                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
-            }
-
-            if(event.key.code == sf::Keyboard::Escape) {
-                Window.close();
-            }
-            break;
+    b2Vec2 velocity = level.GetPlayerBody()->GetLinearVelocity();
+    bool is_inputting = false;
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        is_inputting = true;
+        velocity.y -= 15.0f;
     }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        is_inputting = true;
+        velocity.x += 150.0f;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        is_inputting = true;
+        velocity.x -= 150.0f;
+    }
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        Window.close();
+    }
+    if (!is_inputting && velocity.x) {
+        if (velocity.x > 0) {
+            velocity.x -= 5.0f;
+        } else {
+            velocity.x += 5.0f;
+        }
+    }
+    level.GetPlayerBody()->SetLinearVelocity(velocity);
 }
 
 /*

@@ -297,6 +297,7 @@ void Level::initObjects(Level &lvl)
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
     playerBody->CreateFixture(&fixtureDef);
+    world->SetGravity(b2Vec2(0.0f, 100.0f));
 }
 
 void Level::update(sf::View &view, sf::Vector2i &screenSize)
