@@ -12,19 +12,19 @@ Engine::Engine()
 {
     screenSize.x = 1120;
     screenSize.y = 656;
-    Window.create(sf::VideoMode(screenSize.x, screenSize.y), "mavl");
+    Window.create(sf::VideoMode(screenSize.x, screenSize.y), "*end");
     Window.setFramerateLimit(60);
 
     view.reset(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
-    view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
+    view.setViewport(sf::FloatRect(0.0f, 0.0f, 3.0f, 3.0f));
 //    view.setSize(sf::Vector2f(1920.0f, 1088.0f));
 }
 
 void Engine::start()
 {
-    std::string filename1 = "/Users/sorohimm/CLionProjects/GayEngine/levels/start_level/map1.json";
-    std::string filename = "../GayEngine/levels/start_level/map.json";
-    level.LoadFile(filename1);
+    std::string filename = "../levels/start_level/map1.json";
+
+    level.LoadFile(filename);
     level.initObjects(level);
 
     while (Window.isOpen()) {
@@ -36,4 +36,3 @@ void Engine::start()
         draw();
     }
 }
-

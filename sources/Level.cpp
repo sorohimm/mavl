@@ -72,6 +72,29 @@ void Object::SetRect(sf::Rect<int> &inputRect) {
     rect = inputRect;
 }
 
+Object Level::GetObject(const std::string &name) {
+    for (const auto &el : objects) {
+        if (el.GetName() == name) { return el; }
+    }
+    return objects.back();
+}
+
+std::vector<Object> Level::GetObjects(const std::string &name)
+{
+    std::vector<Object> vec;
+    for (const auto &el : objects) {
+        if (el.GetName() == name) {
+            vec.push_back(el);
+        }
+    }
+    return vec;
+}
+
+sf::Vector2i Level::GetTileSize() const
+{
+    return sf::Vector2i(tileWidth, tileHeight);
+}
+
 bool Level::LoadFile(std::string &filename)
 {
     std::ifstream map(filename);
@@ -115,8 +138,7 @@ bool Level::LoadFile(std::string &filename)
     int rows    = int(tileSetImage.getSize().y / tileHeight);
     int columns = int(tileSetImage.getSize().x / tileWidth);
 
-    std::vector<sf::Rect < int>>
-    subRects;
+    std::vector<sf::Rect < int>> subRects;
 
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < columns; ++x) {
@@ -135,10 +157,10 @@ bool Level::LoadFile(std::string &filename)
     for (const auto &layer : jmap["layers"]) {
         if (layer["type"] == "tilelayer") {
 
-            /* create a new layer */
+            // create a new layer
             Layer thisLayer;
 
-            /* set opacity */
+            // set opacity
             if (layer["opacity"].get<int>() != 1) {
                 auto op = 255 * layer["opacity"].get<int>();
                 thisLayer.SetOpacity(op);
@@ -199,6 +221,17 @@ bool Level::LoadFile(std::string &filename)
                 width = object["width"].get<float>();
                 height = object["height"].get<float>();
 
+                if (object["name"].get<std::string>() == "playerStartPos") {
+                    sf::Rect<int> objectRect;
+                    objectRect.top = y;
+                    objectRect.left = x;
+                    objectRect.height = height;
+                    objectRect.width = width;
+
+                    player.SetRect(objectRect);
+                    continue;
+                }
+
                 Object thisObject;
                 thisObject.SetName(objectName);
                 thisObject.SetType(objectType);
@@ -213,12 +246,12 @@ bool Level::LoadFile(std::string &filename)
                 thisObject.SetRect(objectRect);
 
                 if (object.contains("property")) {
-//                            std::string propertyName  = prop->Attribute("name");
-//                            std::string propertyValue = prop->Attribute("value");
+//                    std::string propertyName  = prop->Attribute("name");
+//                    std::string propertyValue = prop->Attribute("value");
 //
-//                            object.properties[propertyName] = propertyValue;
+//                    object.properties[propertyName] = propertyValue;
 //
-//                            prop = prop->NextSiblingElement("property");
+//                    prop = prop->NextSiblingElement("property");
 
                 }
                 objects.push_back(thisObject);
@@ -226,31 +259,6 @@ bool Level::LoadFile(std::string &filename)
         }
     }
     return true;
-}
-
-Object Level::GetObject(const std::string &name)
-{
-//    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) { return objectEl.GetName() == name; });
-    for (const auto &el : objects) {
-        if (el.GetName() == name) { return el; }
-    }
-    return objects.back();
-}
-
-std::vector<Object> Level::GetObjects(const std::string &name)
-{
-    std::vector<Object> vec;
-    for (const auto &el : objects) {
-        if (el.GetName() == name) {
-            vec.push_back(el);
-        }
-    }
-    return vec;
-}
-
-sf::Vector2i Level::GetTileSize() const
-{
-    return sf::Vector2i(tileWidth, tileHeight);
 }
 
 void Level::initObjects(Level &lvl)
@@ -285,7 +293,7 @@ void Level::initObjects(Level &lvl)
         enemyBody.push_back(body);
     }
 
-    player = lvl.GetObject("player");
+//    player = lvl.GetObject("player");
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(player.GetRect().left, player.GetRect().top);

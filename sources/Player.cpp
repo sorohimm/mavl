@@ -6,7 +6,6 @@
 
 Player::Player()
 {
-
     Texture.loadFromFile("");
     Sprite.setTexture(Texture);
     Sprite.setScale(3, 3);
@@ -16,10 +15,6 @@ Player::Player()
     isOnGround = true;
 }
 
-sf::Sprite Player::getSprite()
-{
-    return Sprite;
-}
 
 void Player::moveLeft()
 {
@@ -28,11 +23,6 @@ void Player::moveLeft()
 void Player::moveRight()
 {
     RightPressed = true;
-}
-
-void Jump()
-{
-
 }
 
 void Player::stopLeft()
@@ -58,29 +48,17 @@ void Player::toBegin()
 
 void Player::update()
 {
-//    if (Position.y < groundHeight)
-//    {
-//        velocityY += gravity;
-//    }
-//
-//    else if (Position.y > groundHeight)
-//    {
-//        Position.y = groundHeight;
-//    }
-//
-//    if (RightPressed)
-//    {
-//        velocityX += accelerationX;
-//        Position.x += velocityX;
-//    }
-//
-//    if (LeftPressed)
-//    {
-//        velocityX -= accelerationX;
-//        Position.x += velocityX;
-//    }
-//
-////    Position.y += velocityY;
 
-//    Sprite.setPosition(Position);
+}
+
+void Player::SetRect(sf::Rect<int> &inputRect) {
+    rect = inputRect;
+}
+
+sf::Rect<int> Player::GetRect() const {
+    return rect;
+}
+
+sf::Sprite Player::GetSprite() {
+    return Sprite;
 }

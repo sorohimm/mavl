@@ -17,11 +17,11 @@ void Engine::input(sf::Event &event)
             }
 
             if(event.key.code == sf::Keyboard::D) {
-                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(150.0f, 0.0f));
+                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(125.0f, 0.0f));
             }
 
             if(event.key.code == sf::Keyboard::A) {
-                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-150.0f, 0.0f));
+                level.GetPlayerBody()->SetLinearVelocity(b2Vec2(-125.0f, 0.0f));
             }
 
             if(event.key.code == sf::Keyboard::Escape) {
