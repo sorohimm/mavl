@@ -23,7 +23,6 @@ public:
     void SetSprite(sf::Sprite&);
     void SetRect(sf::Rect<int>&);
 
-
 private:
     int GetPropertyInt(std::string &input);
     float GetPropertyFloat(std::string &input);
@@ -38,6 +37,15 @@ private:
 class Layer
 {
 public:
+    [[nodiscard]] std::vector<sf::Sprite> GetTilesVector() const;
+    [[nodiscard]] int GetOpacity() const;
+    template <class T>
+    void SetOpacity(T& op) {
+        opacity = op;
+    }
+    void AddSprite(sf::Sprite&);
+
+private:
     int opacity;
     std::vector<sf::Sprite> tiles;
 };

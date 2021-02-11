@@ -7,6 +7,27 @@
 #include <fstream>
 #include <algorithm>
 
+b2Body* Level::GetPlayerBody()
+{
+    return playerBody;
+}
+
+std::vector<sf::Sprite> Layer::GetTilesVector() const {
+    return tiles;
+}
+
+//void Layer::SetOpacity(T op) {
+//
+//}
+
+void Layer::AddSprite(sf::Sprite &inputSprite) {
+    tiles.push_back(inputSprite);
+}
+
+int Layer::GetOpacity() const {
+    return opacity;
+}
+
 int Object::GetPropertyInt(std::string &input)
 {
     return stoi(properties[input]);
@@ -20,11 +41,6 @@ float Object::GetPropertyFloat(std::string &input)
 std::string Object::GetPropertyString(const std::string &input)
 {
     return properties.at(input);
-}
-
-b2Body* Level::GetPlayerBody()
-{
-    return playerBody;
 }
 
 sf::Rect<int> Object::GetRect() const {
@@ -123,9 +139,11 @@ bool Level::LoadFile(std::string &filename)
 
             /* set opacity */
             if (layer["opacity"].get<int>() != 1) {
-                thisLayer.opacity = 255 * layer["opacity"].get<int>();
+                auto op = 255 * layer["opacity"].get<int>();
+                thisLayer.SetOpacity(op);
             } else {
-                thisLayer.opacity = 255;
+                auto op = 255;
+                thisLayer.SetOpacity(op);
             }
 
             float x = 0;
@@ -141,9 +159,9 @@ bool Level::LoadFile(std::string &filename)
                         sprite.setTexture(tileSetImage);
                         sprite.setTextureRect(subRects[subRectToUse]);
                         sprite.setPosition(x * float(tileWidth), y * float(tileHeight));
-                        sprite.setColor(sf::Color(255, 255, 255, thisLayer.opacity));
+                        sprite.setColor(sf::Color(255, 255, 255, thisLayer.GetOpacity()));
 
-                        thisLayer.tiles.push_back(sprite);
+                        thisLayer.AddSprite(sprite);
                     }
 
                     ++x;
@@ -211,7 +229,11 @@ bool Level::LoadFile(std::string &filename)
 
 Object Level::GetObject(const std::string &name)
 {
-    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) -> bool { return objectEl.GetName() == name; });
+//    return *std::find_if(objects.begin(), objects.end(), [name](Object &objectEl) { return objectEl.GetName() == name; });
+    for (const auto &el : objects) {
+        if (el.GetName() == name) { return el; }
+    }
+    return objects.back();
 }
 
 std::vector<Object> Level::GetObjects(const std::string &name)
@@ -280,59 +302,60 @@ void Level::initObjects(Level &lvl)
 
 void Level::update(sf::View &view, sf::Vector2i &screenSize)
 {
-    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
-        b2Contact* c = ce->contact;
-
-        for(int i = 0; i < coinBody.size(); i++)
-            if(c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
-                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
-                coin.erase(coin.begin() + i);
-                coinBody.erase(coinBody.begin() + i);
-            }
-
-        for(int i = 0; i < enemyBody.size(); i++) {
-            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
-                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
-                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
-
-                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
-                    enemy.erase(enemy.begin() + i);
-                    enemyBody.erase(enemyBody.begin() + i);
-                } else {
-                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
-                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
-                }
-            }
-        }
-    }
-
-//    for(const auto &el : enemyBody)
-//    {
-//        if(el->GetLinearVelocity() == b2Vec2_zero)
-//        {
-//            int tmp = (rand() % 2 == 1) ? 1 : -1;
-//            el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
+//    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
+//        b2Contact* c = ce->contact;
+//
+//         for(int i = 0; i < coinBody.size(); i++) {
+//            if (c->GetFixtureA() == coinBody[i]->GetFixtureList()) {
+//                coinBody[i]->DestroyFixture(coinBody[i]->GetFixtureList());
+//                coin.erase(coin.begin() + i);
+//                coinBody.erase(coinBody.begin() + i);
+//            }
+//        }
+//
+//        for(int i = 0; i < enemyBody.size(); i++) {
+//            if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
+//                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
+//                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+//
+//                    enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
+//                    enemy.erase(enemy.begin() + i);
+//                    enemyBody.erase(enemyBody.begin() + i);
+//                } else {
+//                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
+//                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+//                }
+//            }
 //        }
 //    }
+
+    for(const auto &el : enemyBody)
+    {
+        if(el->GetLinearVelocity() == b2Vec2_zero)
+        {
+            int tmp = (rand() % 2 == 1) ? 1 : -1;
+            el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
+        }
+    }
 
     b2Vec2 pos = playerBody->GetPosition();
     view.setCenter(pos.x + float(screenSize.x) / 3, pos.y + float(screenSize.y) / 3);
 
     player.GetSprite().setPosition(pos.x, pos.y);
 
-//    for(int i = 0; i < coin.size(); i++) {
-//        coin[i].sprite.setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
-//    }
+    for(int i = 0; i < coin.size(); i++) {
+        coin[i].GetSprite().setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
+    }
 
-//    for(int i = 0; i < enemy.size(); i++) {
-//        enemy[i].sprite.setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
-//    }
+    for(int i = 0; i < enemy.size(); i++) {
+        enemy[i].GetSprite().setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
+    }
 }
 
 void Level::Draw(sf::RenderWindow &window)
 {
     for (const auto &layer : layers) {
-        for (const auto &tile : layer.tiles) {
+        for (const auto &tile : layer.GetTilesVector()) {
             window.draw(tile);
         }
     }
@@ -340,7 +363,7 @@ void Level::Draw(sf::RenderWindow &window)
         window.draw(el.GetSprite());
     }
 
-//    for(const auto & el : coin) {
-//        window.draw(el.sprite);
-//    }
+    for(const auto & el : coin) {
+        window.draw(el.GetSprite());
+    }
 }
