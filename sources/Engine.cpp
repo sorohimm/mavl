@@ -22,12 +22,18 @@ Engine::Engine()
 
 void Engine::start()
 {
-    std::string filename = "../levels/start_level/map1.json";
+    std::string filename = "levels/start_level/map1.json";
 
     level.LoadFile(filename);
     level.initObjects(level);
 
     while (Window.isOpen()) {
+        sf::Event event;
+        while(Window.pollEvent(event)){
+            if (event.type == sf::Event::Closed) {
+                Window.close();
+            }
+        }
         input();
         level.update(view, screenSize);
         draw();

@@ -10,8 +10,8 @@ class Player
 {
 private:
     sf::Vector2f Position;
-    sf::Sprite Sprite;
-    sf::Texture Texture;
+    sf::Sprite sprite;
+    sf::Texture texture;
 
     bool isOnGround;
     bool LeftPressed;
@@ -21,8 +21,6 @@ private:
     sf::Rect<int> rect;
 
 public:
-    Player();
-
     void moveLeft();
     void moveRight();
     void Jump();
@@ -31,10 +29,11 @@ public:
     void stopJump();
     void toBegin();
     void update();
-
     void SetRect(sf::Rect<int> &inputRect);
     sf::Rect<int> GetRect() const;
     sf::Sprite GetSprite();
+
+    Player();
 };
 
 #endif //GAMEENGINE_P_H

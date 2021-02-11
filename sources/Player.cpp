@@ -6,9 +6,9 @@
 
 Player::Player()
 {
-    Texture.loadFromFile("");
-    Sprite.setTexture(Texture);
-    Sprite.setScale(3, 3);
+    texture.loadFromFile("bmstu.png");
+    sprite.setTexture(texture);
+    sprite.setScale(1, 1);
 
     Position.x = 100;
     Position.y = 100;
@@ -60,5 +60,5 @@ sf::Rect<int> Player::GetRect() const {
 }
 
 sf::Sprite Player::GetSprite() {
-    return Sprite;
+    return sprite;
 }

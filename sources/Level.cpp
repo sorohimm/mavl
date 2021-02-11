@@ -293,7 +293,7 @@ void Level::initObjects(Level &lvl)
         enemyBody.push_back(body);
     }
 
-//    player = lvl.GetObject("player");
+
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(player.GetRect().left, player.GetRect().top);
