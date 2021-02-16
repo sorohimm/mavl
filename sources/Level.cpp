@@ -14,7 +14,7 @@ Level::Level()
     world = new b2World(gravity);
 }
 
-Player Level::GetPlayer()
+Player& Level::GetPlayer()
 {
     return player;
 }
@@ -24,13 +24,12 @@ std::vector<sf::Sprite> Layer::GetTilesVector() const
     return tiles;
 }
 
-template <class T>
-void Layer::SetOpacity(T &op)
+void Layer::SetOpacity(const int op)
 {
     opacity = op;
 }
 
-void Layer::SetSprite(sf::Sprite &inputSprite)
+void Layer::SetSprite(const sf::Sprite &inputSprite)
 {
     tiles.push_back(inputSprite);
 }
@@ -55,42 +54,42 @@ std::string Object::GetPropertyString(const std::string &input)
     return properties.at(input);
 }
 
-sf::Rect<int> Object::GetRect() const
+const sf::Rect<int>& Object::GetRect() const
 {
     return rect;
 }
 
-std::string Object::GetName() const
+const std::string& Object::GetName() const
 {
     return name;
 }
 
-sf::Sprite Object::GetSprite() const
+const sf::Sprite& Object::GetSprite() const
 {
     return sprite;
 }
 
-void Object::SetName(std::string &inputName)
+void Object::SetName(const std::string &inputName)
 {
     name = inputName;
 }
 
-void Object::SetType(std::string &inputType)
+void Object::SetType(const std::string &inputType)
 {
     type = inputType;
 }
 
-void Object::SetSprite(sf::Sprite &inputSprite)
+void Object::SetSprite(const sf::Sprite &inputSprite)
 {
     sprite = inputSprite;
 }
 
-void Object::SetRect(sf::Rect<int> &inputRect)
+void Object::SetRect(const sf::Rect<int> &inputRect)
 {
     rect = inputRect;
 }
 
-Object Level::GetObject(const std::string &name)
+const Object& Level::GetObject(const std::string &name) const
 {
     for (const auto &el : objects) {
         if (el.GetName() == name) { return el; }
@@ -98,7 +97,7 @@ Object Level::GetObject(const std::string &name)
     return objects.back();
 }
 
-std::vector<Object> Level::GetObjects(const std::string &name)
+const std::vector<Object> Level::GetObjects(const std::string &name) const
 {
     std::vector<Object> vec;
     for (const auto &el : objects) {
@@ -109,12 +108,12 @@ std::vector<Object> Level::GetObjects(const std::string &name)
     return vec;
 }
 
-sf::Vector2i Level::GetTileSize() const
+const sf::Vector2i Level::GetTileSize() const
 {
     return sf::Vector2i(tileWidth, tileHeight);
 }
 
-bool Level::LoadLevel(std::string &filename)
+bool Level::LoadLevel(const std::string &filename)
 {
     std::ifstream map(filename);
 
@@ -281,7 +280,7 @@ bool Level::LoadLevel(std::string &filename)
     return true;
 }
 
-void Level::initObjects(Level &lvl)
+void Level::initObjects(const Level &lvl)
 {
     sf::Vector2i tileSize = lvl.GetTileSize();
 
@@ -324,7 +323,6 @@ void Level::initObjects(Level &lvl)
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
     player.GetPlayerBody()->CreateFixture(&fixtureDef);
-
     world->SetGravity(b2Vec2(0.0f, 100.0f));
 }
 
@@ -369,7 +367,7 @@ void Level::LevelUpdate(sf::View &view, const sf::Vector2i &screenSize)
     }
 }
 
-void Level::Draw(sf::RenderWindow &window)
+void Level::Draw(sf::RenderWindow &window) const
 {
     for (const auto &layer : layers) {
         for (const auto &tile : layer.GetTilesVector()) {

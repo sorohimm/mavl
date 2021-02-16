@@ -38,6 +38,7 @@ void Engine::input()
           velocity.x *= 0.5;
         }
     }
+    std::cout << "Vertical speed: " << velocity.y << std::endl;
     level.GetPlayer().GetPlayerBody()->SetLinearVelocity(velocity);
 }
 
