@@ -26,13 +26,13 @@ private:
     sf::Sprite sprite;
 
 public:
-    sf::Rect<int> GetRect() const;
-    std::string GetName() const;
-    sf::Sprite GetSprite() const;
-    void SetName(std::string&);
-    void SetType(std::string&);
-    void SetSprite(sf::Sprite&);
-    void SetRect(sf::Rect<int>&);
+    const sf::Rect<int>& GetRect() const;
+    const std::string& GetName() const;
+    const sf::Sprite& GetSprite() const;
+    void SetName(const std::string&);
+    void SetType(const std::string&);
+    void SetSprite(const sf::Sprite&);
+    void SetRect(const sf::Rect<int>&);
 };
 
 class Layer: public Player
@@ -44,9 +44,8 @@ private:
 public:
     [[nodiscard]] std::vector<sf::Sprite> GetTilesVector() const;
     [[nodiscard]] int GetOpacity() const;
-    template <class T>
-    void SetOpacity(T&);
-    void SetSprite(sf::Sprite&);
+    void SetOpacity(const int);
+    void SetSprite(const sf::Sprite&);
 };
 
 class Level
@@ -75,14 +74,14 @@ private:
     b2World* world;
 
 public:
-    Player GetPlayer();
-    bool LoadLevel(std::string&);
-    Object GetObject(const std::string&);
-    std::vector<Object> GetObjects(const std::string&);
-    sf::Vector2i GetTileSize() const;
-    void Draw(sf::RenderWindow&);
+    Player& GetPlayer();
+    bool LoadLevel(const std::string&);
+    const Object& GetObject(const std::string&) const;
+    const std::vector<Object> GetObjects(const std::string&) const;
+    const sf::Vector2i GetTileSize() const;
+    void Draw(sf::RenderWindow&) const;
     void LevelUpdate(sf::View&, const sf::Vector2i&);
-    void initObjects(Level&);
+    void initObjects(const Level&);
 
     Level();
 };

@@ -15,15 +15,13 @@ private:
     sf::Vector2<float> textureSize;
     bool isOnGround;
     sf::Rect<int> rect;
-
 public:
     b2Body* playerBody;
     virtual b2Body* GetPlayerBody();
     void SetRect(sf::Rect<int> &inputRect);
     virtual void PlayerUpdate(sf::View&, const sf::Vector2i&);
-    sf::Rect<int> GetRect() const;
-    sf::Sprite GetSprite();
-
+    const sf::Rect<int>& GetRect() const;
+    const sf::Sprite& GetSprite() const;
     Player();
 };
 
