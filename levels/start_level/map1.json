@@ -617,7 +617,7 @@
         {
          "columns":12,
          "firstgid":1,
-         "image":"../GayEngine/ground.png",
+         "image":"ground.png",
          "imageheight":112,
          "imagewidth":192,
          "margin":0,

@@ -5,31 +5,22 @@
 #define GAYENGINE_P_H
 
 #include <SFML/Graphics.hpp>
+#include <box2d/box2d.h>
 
 class Player
 {
 private:
-    sf::Vector2f Position;
     sf::Sprite sprite;
     sf::Texture texture;
-
+    sf::Vector2<float> textureSize;
     bool isOnGround;
-    bool LeftPressed;
-    bool RightPressed;
-    bool isSelect;
-    bool isMove;
     sf::Rect<int> rect;
 
 public:
-    void moveLeft();
-    void moveRight();
-    void Jump();
-    void stopLeft();
-    void stopRight();
-    void stopJump();
-    void toBegin();
-    void update();
+    b2Body* playerBody;
+    virtual b2Body* GetPlayerBody();
     void SetRect(sf::Rect<int> &inputRect);
+    virtual void PlayerUpdate(sf::View&, const sf::Vector2i&);
     sf::Rect<int> GetRect() const;
     sf::Sprite GetSprite();
 

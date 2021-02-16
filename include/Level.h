@@ -35,18 +35,18 @@ public:
     void SetRect(sf::Rect<int>&);
 };
 
-class Layer
+class Layer: public Player
 {
+private:
+    int opacity;
+    std::vector<sf::Sprite> tiles;
+
 public:
     [[nodiscard]] std::vector<sf::Sprite> GetTilesVector() const;
     [[nodiscard]] int GetOpacity() const;
     template <class T>
     void SetOpacity(T&);
-    void AddSprite(sf::Sprite&);
-
-private:
-    int opacity;
-    std::vector<sf::Sprite> tiles;
+    void SetSprite(sf::Sprite&);
 };
 
 class Level
@@ -56,7 +56,6 @@ private:
     int height;
     int tileWidth;
     int tileHeight;
-    int firstTileID;
     std::vector<std::pair<std::string, int>> firstTileIDs;
 
     sf::Rect<float> drawingBounds;
@@ -65,25 +64,24 @@ private:
     std::vector<Layer> layers;
 
     Player player;
-    b2Body* playerBody;
-
-    std::vector<Object> coin;
-    std::vector<b2Body*> coinBody;
 
     std::vector<Object> enemy;
     std::vector<b2Body*> enemyBody;
+
+    std::vector<Object> coin;
+    std::vector<b2Body*> coinBody;
 
     b2Vec2 gravity;
     b2World* world;
 
 public:
-    bool LoadFile(std::string&);
+    Player GetPlayer();
+    bool LoadLevel(std::string&);
     Object GetObject(const std::string&);
     std::vector<Object> GetObjects(const std::string&);
     sf::Vector2i GetTileSize() const;
-    b2Body* GetPlayerBody();
     void Draw(sf::RenderWindow&);
-    void update(sf::View&, sf::Vector2i&);
+    void LevelUpdate(sf::View&, const sf::Vector2i&);
     void initObjects(Level&);
 
     Level();

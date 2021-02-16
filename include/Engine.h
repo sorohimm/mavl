@@ -7,27 +7,22 @@
 
 #include <SFML/Graphics.hpp>
 #include <Level.h>
-#include <Player.h>
 
-class Engine
+class Engine: public Level
 {
+private:
+    sf::Vector2i screenSize;
+    bool is_inputting;
+    sf::RenderWindow Window;
+    Level level;
+    sf::View view;
+    void input();
+    void draw();
+    void EngineUpdate();
+
 public:
     void start();
-    sf::Vector2i GetScreenSize();
     Engine();
-
-private:
-    sf::RenderWindow Window;
-
-//    Player player;
-    Level level;
-
-    void input();
-//    void update();
-    void draw();
-
-    sf::View view;
-    sf::Vector2i screenSize;
 };
 
 #endif //GAYENGINE_ENGINE_H

@@ -6,26 +6,37 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <algorithm>
+#include <cmath>
 
-b2Body* Level::GetPlayerBody()
+Level::Level()
 {
-    return playerBody;
+    gravity.Set(1.0f, 0.0f);
+    world = new b2World(gravity);
 }
 
-std::vector<sf::Sprite> Layer::GetTilesVector() const {
+Player Level::GetPlayer()
+{
+    return player;
+}
+
+std::vector<sf::Sprite> Layer::GetTilesVector() const
+{
     return tiles;
 }
 
 template <class T>
-void Layer::SetOpacity(T &op) {
+void Layer::SetOpacity(T &op)
+{
     opacity = op;
 }
 
-void Layer::AddSprite(sf::Sprite &inputSprite) {
+void Layer::SetSprite(sf::Sprite &inputSprite)
+{
     tiles.push_back(inputSprite);
 }
 
-int Layer::GetOpacity() const {
+int Layer::GetOpacity() const
+{
     return opacity;
 }
 
@@ -44,35 +55,43 @@ std::string Object::GetPropertyString(const std::string &input)
     return properties.at(input);
 }
 
-sf::Rect<int> Object::GetRect() const {
+sf::Rect<int> Object::GetRect() const
+{
     return rect;
 }
 
-std::string Object::GetName() const {
+std::string Object::GetName() const
+{
     return name;
 }
 
-sf::Sprite Object::GetSprite() const {
+sf::Sprite Object::GetSprite() const
+{
     return sprite;
 }
 
-void Object::SetName(std::string &inputName) {
+void Object::SetName(std::string &inputName)
+{
     name = inputName;
 }
 
-void Object::SetType(std::string &inputType) {
+void Object::SetType(std::string &inputType)
+{
     type = inputType;
 }
 
-void Object::SetSprite(sf::Sprite &inputSprite) {
+void Object::SetSprite(sf::Sprite &inputSprite)
+{
     sprite = inputSprite;
 }
 
-void Object::SetRect(sf::Rect<int> &inputRect) {
+void Object::SetRect(sf::Rect<int> &inputRect)
+{
     rect = inputRect;
 }
 
-Object Level::GetObject(const std::string &name) {
+Object Level::GetObject(const std::string &name)
+{
     for (const auto &el : objects) {
         if (el.GetName() == name) { return el; }
     }
@@ -95,7 +114,7 @@ sf::Vector2i Level::GetTileSize() const
     return sf::Vector2i(tileWidth, tileHeight);
 }
 
-bool Level::LoadFile(std::string &filename)
+bool Level::LoadLevel(std::string &filename)
 {
     std::ifstream map(filename);
 
@@ -146,6 +165,7 @@ bool Level::LoadFile(std::string &filename)
 
             rect.top = y * tileHeight;
             rect.height = tileHeight;
+
             rect.left = x * tileWidth;
             rect.width = tileWidth;
 
@@ -184,7 +204,7 @@ bool Level::LoadFile(std::string &filename)
                         sprite.setPosition(x * float(tileWidth), y * float(tileHeight));
                         sprite.setColor(sf::Color(255, 255, 255, thisLayer.GetOpacity()));
 
-                        thisLayer.AddSprite(sprite);
+                        thisLayer.SetSprite(sprite);
                     }
 
                     ++x;
@@ -223,10 +243,10 @@ bool Level::LoadFile(std::string &filename)
 
                 if (object["name"].get<std::string>() == "playerStartPos") {
                     sf::Rect<int> objectRect;
-                    objectRect.top = y;
+                    objectRect.top  = y;
                     objectRect.left = x;
                     objectRect.height = height;
-                    objectRect.width = width;
+                    objectRect.width  = width;
 
                     player.SetRect(objectRect);
                     continue;
@@ -265,9 +285,9 @@ void Level::initObjects(Level &lvl)
 {
     sf::Vector2i tileSize = lvl.GetTileSize();
 
+    //init static solid block's
     std::vector<Object> solid = lvl.GetObjects("solid");
-    for(const auto &el : solid)
-    {
+    for(const auto &el : solid) {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
         bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
@@ -279,8 +299,7 @@ void Level::initObjects(Level &lvl)
     }
 
     enemy = lvl.GetObjects("enemy");
-    for(const auto &el: enemy)
-    {
+    for(const auto &el: enemy) {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
         bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
@@ -293,26 +312,27 @@ void Level::initObjects(Level &lvl)
         enemyBody.push_back(body);
     }
 
-
     b2BodyDef bodyDef;
+
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(player.GetRect().left, player.GetRect().top);
     bodyDef.fixedRotation = true;
-    playerBody = world->CreateBody(&bodyDef);
+    player.playerBody = world->CreateBody(&bodyDef);
     b2PolygonShape shape;
     shape.SetAsBox(float(player.GetRect().width) / 2, float(player.GetRect().height) / 2);
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
-    playerBody->CreateFixture(&fixtureDef);
+    player.GetPlayerBody()->CreateFixture(&fixtureDef);
+
     world->SetGravity(b2Vec2(0.0f, 100.0f));
 }
 
-void Level::update(sf::View &view, sf::Vector2i &screenSize)
+void Level::LevelUpdate(sf::View &view, const sf::Vector2i &screenSize)
 {
     world->Step(1.0f / 60.0f, 1, 1);
 
-    for(b2ContactEdge* ce = playerBody->GetContactList(); ce; ce = ce->next) {
+    for(b2ContactEdge* ce = player.GetPlayerBody()->GetContactList(); ce; ce = ce->next) {
         b2Contact* c = ce->contact;
 
          for(int i = 0; i < coinBody.size(); i++) {
@@ -325,15 +345,15 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
 
         for(int i = 0; i < enemyBody.size(); i++) {
             if (c->GetFixtureA() == enemyBody[i]->GetFixtureList()) {
-                if (playerBody->GetPosition().y < enemyBody[i]->GetPosition().y) {
-                    playerBody->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
+                if (player.GetPlayerBody()->GetPosition().y < enemyBody[i]->GetPosition().y) {
+                    player.GetPlayerBody()->SetLinearVelocity(b2Vec2(0.0f, -10.0f));
 
                     enemyBody[i]->DestroyFixture(enemyBody[i]->GetFixtureList());
                     enemy.erase(enemy.begin() + i);
                     enemyBody.erase(enemyBody.begin() + i);
                 } else {
-                    int tmp = (playerBody->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
-                    playerBody->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
+                    int tmp = (player.GetPlayerBody()->GetPosition().x < enemyBody[i]->GetPosition().x) ? -1 : 1;
+                    player.GetPlayerBody()->SetLinearVelocity(b2Vec2(10.0f * float(tmp), 0.0f));
                 }
             }
         }
@@ -346,19 +366,6 @@ void Level::update(sf::View &view, sf::Vector2i &screenSize)
             int tmp = (rand() % 2 == 1) ? 1 : -1;
             el->SetLinearVelocity(b2Vec2(5.0f * float(tmp), 0.0f));
         }
-    }
-
-    b2Vec2 pos = playerBody->GetPosition();
-    view.setCenter(pos.x + float(screenSize.x) / 3, pos.y + float(screenSize.y) / 3);
-
-    player.GetSprite().setPosition(pos.x, pos.y);
-
-    for(int i = 0; i < coin.size(); i++) {
-        coin[i].GetSprite().setPosition(coinBody[i]->GetPosition().x, coinBody[i]->GetPosition().y);
-    }
-
-    for(int i = 0; i < enemy.size(); i++) {
-        enemy[i].GetSprite().setPosition(enemyBody[i]->GetPosition().x, enemyBody[i]->GetPosition().y);
     }
 }
 
@@ -376,9 +383,4 @@ void Level::Draw(sf::RenderWindow &window)
     for(const auto & el : coin) {
         window.draw(el.GetSprite());
     }
-}
-
-Level::Level() {
-    gravity.Set(1.0f, 0.0f);
-    world = new b2World(gravity);
 }

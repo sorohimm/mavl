@@ -4,6 +4,7 @@
 
 #include "Engine.h"
 
-//void Engine::update() {
-//    player.update();
-//}
+void Engine::EngineUpdate() {
+    level.LevelUpdate(view, screenSize);
+    level.GetPlayer().PlayerUpdate(view, screenSize);
+}

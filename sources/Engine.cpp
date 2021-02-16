@@ -4,27 +4,24 @@
 
 #include <Engine.h>
 
-sf::Vector2i Engine::GetScreenSize() {
-    return screenSize;
-}
+
 
 Engine::Engine()
 {
-    screenSize.x = 1120;
-    screenSize.y = 656;
-    Window.create(sf::VideoMode(screenSize.x, screenSize.y), "*end");
+    screenSize.x = sf::VideoMode::getDesktopMode().width;
+    screenSize.y = sf::VideoMode::getDesktopMode().height;
+    Window.create(sf::VideoMode(screenSize.x, screenSize.y), "*end", sf::Style::Fullscreen);
     Window.setFramerateLimit(60);
 
     view.reset(sf::FloatRect(0.0f, 0.0f, screenSize.x, screenSize.y));
     view.setViewport(sf::FloatRect(0.0f, 0.0f, 3.0f, 3.0f));
-//    view.setSize(sf::Vector2f(1920.0f, 1088.0f));
 }
 
 void Engine::start()
 {
     std::string filename = "levels/start_level/map1.json";
 
-    level.LoadFile(filename);
+    level.LoadLevel(filename);
     level.initObjects(level);
 
     while (Window.isOpen()) {
@@ -35,7 +32,7 @@ void Engine::start()
             }
         }
         input();
-        level.update(view, screenSize);
+        EngineUpdate();
         draw();
     }
 }
