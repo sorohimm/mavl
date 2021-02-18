@@ -7,6 +7,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cmath>
+#define TILE_DIV 32.0f
 
 Level::Level()
 {
@@ -289,24 +290,24 @@ void Level::initObjects(const Level &lvl)
     for(const auto &el : solid) {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
-                             float(el.GetRect().top) + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
+        bodyDef.position.Set((float(el.GetRect().left) + float(tileSize.x) * (float(el.GetRect().width) / float(tileSize.x - 1))) / TILE_DIV,
+                             (float(el.GetRect().top) + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1)))) / TILE_DIV);
         b2Body* body = world->CreateBody(&bodyDef);
         b2PolygonShape shape;
-        shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
-        body->CreateFixture(&shape,1.0f);
+        shape.SetAsBox(float(el.GetRect().width) / 2 / TILE_DIV, float(el.GetRect().height) / 2 / TILE_DIV);
+        body->CreateFixture(&shape, 1.0f);
     }
 
     enemy = lvl.GetObjects("enemy");
     for(const auto &el: enemy) {
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1)),
-                             float(el.GetRect().top)  + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1))));
+        bodyDef.position.Set((float(el.GetRect().left) + float(tileSize.x) / 2 * (float(el.GetRect().width) / float(tileSize.x - 1))) / TILE_DIV,
+                             (float(el.GetRect().top)  + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1)))) / TILE_DIV);
         bodyDef.fixedRotation = true;
         b2Body* body = world->CreateBody(&bodyDef);
         b2PolygonShape shape;
-        shape.SetAsBox(float(el.GetRect().width) / 2, float(el.GetRect().height) / 2);
+        shape.SetAsBox(float(el.GetRect().width) / 2 / TILE_DIV, float(el.GetRect().height) / 2 / TILE_DIV);
         body->CreateFixture(&shape,1.0f);
         enemyBody.push_back(body);
     }
@@ -314,16 +315,16 @@ void Level::initObjects(const Level &lvl)
     b2BodyDef bodyDef;
 
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(player.GetRect().left, player.GetRect().top);
+    bodyDef.position.Set(player.GetRect().left / TILE_DIV, player.GetRect().top / TILE_DIV);
     bodyDef.fixedRotation = true;
     player.playerBody = world->CreateBody(&bodyDef);
     b2PolygonShape shape;
-    shape.SetAsBox(float(player.GetRect().width) / 2, float(player.GetRect().height) / 2);
+    shape.SetAsBox(float(player.GetRect().width) / 2 / TILE_DIV, float(player.GetRect().height) / 2 / TILE_DIV);
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f; fixtureDef.friction = 0.3f;
     player.GetPlayerBody()->CreateFixture(&fixtureDef);
-    world->SetGravity(b2Vec2(0.0f, 100.0f));
+    world->SetGravity(b2Vec2(0.0f, 10.0f));
 }
 
 void Level::LevelUpdate(sf::View &view, const sf::Vector2i &screenSize)

@@ -19,6 +19,8 @@ void Player::PlayerUpdate(sf::View& view, const sf::Vector2i& screenSize)
 {
     playerBody->GetWorldCenter();
     b2Vec2 pos = playerBody->GetPosition();
+    pos.x *= 32.0f;
+    pos.y *= 32.0f;
     //std::cout << "player pos: " << pos.x << ", " << pos.y << ";";
     view.setCenter(pos.x + screenSize.x / 3.0f,
                    pos.y + screenSize.y / 3.0f);
