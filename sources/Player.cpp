@@ -24,7 +24,7 @@ void Player::PlayerUpdate(sf::View& view, const sf::Vector2i& screenSize)
     //std::cout << "player pos: " << pos.x << ", " << pos.y << ";";
     view.setCenter(pos.x + screenSize.x / 3.0f,
                    pos.y + screenSize.y / 3.0f);
-    sprite.setPosition(pos.x, pos.y);
+    sprite.setPosition(pos.x + 12.0f, pos.y + 8.0f);
     //std::cout << "  " << "sprite pos: " << sprite.getPosition().x  << ", " << sprite.getPosition().y << ";" << std::endl;
 }
 

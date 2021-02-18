@@ -55,7 +55,7 @@ std::string Object::GetPropertyString(const std::string &input)
     return properties.at(input);
 }
 
-const sf::Rect<int>& Object::GetRect() const
+const sf::Rect<float>& Object::GetRect() const
 {
     return rect;
 }
@@ -85,7 +85,7 @@ void Object::SetSprite(const sf::Sprite &inputSprite)
     sprite = inputSprite;
 }
 
-void Object::SetRect(const sf::Rect<int> &inputRect)
+void Object::SetRect(const sf::Rect<float> &inputRect)
 {
     rect = inputRect;
 }
@@ -157,7 +157,7 @@ bool Level::LoadLevel(const std::string &filename)
     int rows    = int(tileSetImage.getSize().y / tileHeight);
     int columns = int(tileSetImage.getSize().x / tileWidth);
 
-    std::vector<sf::Rect < int>> subRects;
+    std::vector<sf::Rect<int>> subRects;
 
     for (int y = 0; y < rows; ++y) {
         for (int x = 0; x < columns; ++x) {
@@ -257,7 +257,7 @@ bool Level::LoadLevel(const std::string &filename)
                 thisObject.SetType(objectType);
                 thisObject.SetSprite(sprite);
 
-                sf::Rect<int> objectRect;
+                sf::Rect<float> objectRect;
                 objectRect.top = y;
                 objectRect.left = x;
                 objectRect.height = height;
@@ -290,8 +290,8 @@ void Level::initObjects(const Level &lvl)
     for(const auto &el : solid) {
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
-        bodyDef.position.Set((float(el.GetRect().left) + float(tileSize.x) * (float(el.GetRect().width) / float(tileSize.x - 1))) / TILE_DIV,
-                             (float(el.GetRect().top) + float(tileSize.y) / 2 * (float(el.GetRect().height / float(tileSize.y - 1)))) / TILE_DIV);
+        bodyDef.position.Set((el.GetRect().left + float(tileSize.x) / 2 * (el.GetRect().width / tileSize.x - 1)) / TILE_DIV,
+                             (el.GetRect().top + float(tileSize.y) / 2 * (el.GetRect().height / tileSize.y - 1)) / TILE_DIV);
         b2Body* body = world->CreateBody(&bodyDef);
         b2PolygonShape shape;
         shape.SetAsBox(float(el.GetRect().width) / 2 / TILE_DIV, float(el.GetRect().height) / 2 / TILE_DIV);
