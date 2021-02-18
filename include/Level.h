@@ -21,18 +21,18 @@ private:
     std::string GetPropertyString(const std::string &input);
     std::string name;
     std::string type;
-    sf::Rect<int> rect;
+    sf::Rect<float> rect;
     std::map<std::string, std::string> properties;
     sf::Sprite sprite;
 
 public:
-    const sf::Rect<int>& GetRect() const;
+    const sf::Rect<float>& GetRect() const;
     const std::string& GetName() const;
     const sf::Sprite& GetSprite() const;
     void SetName(const std::string&);
     void SetType(const std::string&);
     void SetSprite(const sf::Sprite&);
-    void SetRect(const sf::Rect<int>&);
+    void SetRect(const sf::Rect<float>&);
 };
 
 class Layer: public Player
