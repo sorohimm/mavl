@@ -6,28 +6,23 @@
 #define GAYENGINE_ENGINE_H
 
 #include <SFML/Graphics.hpp>
-#include <Level.h>
-#include <Player.h>
+#include <World.h>
 
-class Engine
+class Engine: public World
 {
-public:
-    Engine();
-    void start();
-    sf::Vector2i GetScreenSize();
-
 private:
-    sf::RenderWindow Window;
-
-//    Player player;
-    Level level;
-
-    void input(sf::Event&);
-//    void update();
-    void draw();
-
-    sf::View view;
     sf::Vector2i screenSize;
+    bool is_inputting;
+    sf::RenderWindow Window;
+    World level;
+    sf::View view;
+    void input();
+    void draw();
+    void EngineUpdate();
+
+public:
+    void start();
+    Engine();
 };
 
 #endif //GAYENGINE_ENGINE_H

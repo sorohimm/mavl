@@ -5,35 +5,15 @@
 #define GAYENGINE_P_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <box2d/box2d.h>
+#include "Object.h"
 
-class Player
+class Player : public Object
 {
-private:
-    sf::Vector2f Position;
-    sf::Sprite Sprite;
-    sf::Texture Texture;
-
-    bool isOnGround;
-    bool LeftPressed;
-    bool RightPressed;
-    bool isSelect;
-    bool isMove;
-
 public:
     Player();
-
-    sf::Sprite getSprite();
-
-    void moveLeft();
-    void moveRight();
-    void Jump();
-
-    void stopLeft();
-    void stopRight();
-    void stopJump();
-    void toBegin();
-
-    void update();
 };
 
 #endif //GAMEENGINE_P_H

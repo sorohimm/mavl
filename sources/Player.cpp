@@ -3,84 +3,16 @@
 //
 
 #include <Player.h>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <iostream>
 
 Player::Player()
 {
-
-    Texture.loadFromFile("");
-    Sprite.setTexture(Texture);
-    Sprite.setScale(3, 3);
-
-    Position.x = 100;
-    Position.y = 100;
-    isOnGround = true;
+    GetTexture().loadFromFile("cockBall.png");
+    GetSprite().setScale(0.05, 0.05);
+    GetSprite().setOrigin(GetTexture().getSize().x / 1.5f, GetTexture().getSize().y / 2.0f);
+    GetSprite().setTexture(GetTexture());
 }
 
-sf::Sprite Player::getSprite()
-{
-    return Sprite;
-}
-
-void Player::moveLeft()
-{
-    LeftPressed = true;
-}
-void Player::moveRight()
-{
-    RightPressed = true;
-}
-
-void Jump()
-{
-
-}
-
-void Player::stopLeft()
-{
-    LeftPressed = false;
-}
-
-void Player::stopRight()
-{
-    RightPressed = false;
-}
-
-void Player::stopJump()
-{
-    LeftPressed = false;
-}
-
-void Player::toBegin()
-{
-    Position.x = 100;
-    Position.y = 100;
-}
-
-void Player::update()
-{
-//    if (Position.y < groundHeight)
-//    {
-//        velocityY += gravity;
-//    }
-//
-//    else if (Position.y > groundHeight)
-//    {
-//        Position.y = groundHeight;
-//    }
-//
-//    if (RightPressed)
-//    {
-//        velocityX += accelerationX;
-//        Position.x += velocityX;
-//    }
-//
-//    if (LeftPressed)
-//    {
-//        velocityX -= accelerationX;
-//        Position.x += velocityX;
-//    }
-//
-////    Position.y += velocityY;
-
-//    Sprite.setPosition(Position);
-}
