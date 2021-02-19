@@ -8,7 +8,8 @@ find_package(box2d REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
 set(SOURCE_FILES sources/Main.cpp sources/Draw.cpp sources/Input.cpp sources/Engine.cpp
-        sources/Player.cpp sources/Update.cpp sources/Level.cpp)
+        sources/Player.cpp sources/Update.cpp sources/World.cpp
+        sources/Object.cpp sources/Layer.cpp )
 
 add_executable(GayEngine ${SOURCE_FILES})
 

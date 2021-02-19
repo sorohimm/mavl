@@ -6,5 +6,6 @@
 
 void Engine::EngineUpdate() {
     level.LevelUpdate(view, screenSize);
-    level.GetPlayer().PlayerUpdate(view, screenSize);
+    level.GetPlayer().Update(view, screenSize);
+    auto playerPos = level.GetPlayer().GetBody()->GetPosition();
 }

@@ -3,6 +3,7 @@
 //
 
 #include <Engine.h>
+#include <SFML/Window/WindowStyle.hpp>
 
 
 
