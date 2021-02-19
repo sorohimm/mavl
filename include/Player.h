@@ -5,23 +5,14 @@
 #define GAYENGINE_P_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <box2d/box2d.h>
+#include "Object.h"
 
-class Player
+class Player : public Object
 {
-private:
-    sf::Sprite sprite;
-    sf::Texture texture;
-    sf::Vector2<float> textureSize;
-    bool isOnGround;
-    sf::Rect<int> rect;
 public:
-    b2Body* playerBody;
-    virtual b2Body* GetPlayerBody();
-    void SetRect(sf::Rect<int> &inputRect);
-    virtual void PlayerUpdate(sf::View&, const sf::Vector2i&);
-    const sf::Rect<int>& GetRect() const;
-    const sf::Sprite& GetSprite() const;
     Player();
 };
 

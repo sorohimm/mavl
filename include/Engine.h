@@ -6,15 +6,15 @@
 #define GAYENGINE_ENGINE_H
 
 #include <SFML/Graphics.hpp>
-#include <Level.h>
+#include <World.h>
 
-class Engine: public Level
+class Engine: public World
 {
 private:
     sf::Vector2i screenSize;
     bool is_inputting;
     sf::RenderWindow Window;
-    Level level;
+    World level;
     sf::View view;
     void input();
     void draw();

@@ -57,7 +57,7 @@ void clamp(b2Vec2& velocity) {
 
 void Engine::input()
 {
-    b2Vec2 velocity = level.GetPlayer().GetPlayerBody()->GetLinearVelocity();
+    b2Vec2 velocity = level.GetPlayer().GetBody()->GetLinearVelocity();
     if (velocity.y == 0) {
       ground_input(velocity);
     } else {
@@ -68,7 +68,7 @@ void Engine::input()
         Window.close();
     }
     clamp(velocity);
-    level.GetPlayer().GetPlayerBody()->SetLinearVelocity(velocity);
+    level.GetPlayer().GetBody()->SetLinearVelocity(velocity);
 }
 
 /*
